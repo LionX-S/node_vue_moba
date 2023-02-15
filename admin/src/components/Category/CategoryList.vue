@@ -4,8 +4,14 @@
 		<el-main>
 			<el-table :data="categoriesList">
 				<el-table-column
-					prop="id"
+					type="index"
 					label="序号"
+					width="220"
+					align="center">
+				</el-table-column>
+				<el-table-column
+					prop="id"
+					label="id"
 					width="220"
 					align="center">
 				</el-table-column>
@@ -18,6 +24,7 @@
 					prop="create_time"
 					label="创建时间"
 					width="400"
+					:formatter="dateFormate"
 					align="center">
 				</el-table-column>
 				<el-table-column
@@ -45,14 +52,19 @@
 	</div>
 </template>
 <script>
+	import moment from "moment";
 	export default {
 		name: "CategoryList",
+		inject:['reload'],
 		data() {
 			return {
 				categoriesList: []
 			};
 		},
 		methods: {
+			dateFormate(row, column, cellValue, index) {
+				return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+			},
 			async getCategoryList() {
 				const res = await this.$http.get("categories");
 				const { code, body, message } = res.data;
@@ -76,9 +88,10 @@
 						const { code, message } = res.data;
 						if (code === 200) {
 							this.$message({
-                type:"success",
-                message
-              })
+								type: "success",
+								message
+							});
+							this.reload()
 						} else {
 							this.$message({
 								type: "error",

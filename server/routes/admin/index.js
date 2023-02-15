@@ -1,22 +1,30 @@
+function setFirstLevelArray(result) {
+	return result.map((item, index) => {
+		return {
+			id: item.id,
+			label: item.name
+		};
+	});
+}
 module.exports = (app) => {
 	const express = require("express");
 	const router = express.Router();
 	const mysql = require("../../plugins/db");
 	// 新版nanoid不支持commonJS
 	let nanoid;
-	const nanoidModel  = async	() => {
-		const model = await import('nanoid')
+	const nanoidModel = async () => {
+		const model = await import("nanoid");
 		return model;
-	}
+	};
 	nanoidModel().then((res) => {
 		nanoid = res.nanoid;
-	})
+	});
 	// 新增分类
 	router.post("/categories", async (req, res) => {
 		await mysql().query(
-			`insert into categories (id,name,create_time) values ("${nanoid(5)}","${
-				req.body.name
-			}", NOW())`,
+			`insert into categories (id,name,higherLevelID,create_time) values ("${nanoid(
+				8
+			)}","${req.body.name}","${req.body.categoryLevelID}", NOW())`,
 			(err, result) => {
 				if (err) {
 					res.send({
@@ -110,6 +118,30 @@ module.exports = (app) => {
 					res.send({
 						code: 200,
 						message: "删除数据成功"
+					});
+				}
+			}
+		);
+	});
+
+	// 一级分类列表
+	router.get("/getFirstCategory", async (req, res) => {
+		await mysql().query(
+			'select * from categories where higherLevelID="firstLevel"',
+			(err, result) => {
+				if (err) {
+					res.send({
+						code: 400,
+						message: "获取一级分类数据失败",
+						err
+					});
+				} else {
+					res.send({
+						code: 200,
+						body: {
+							label: "一级分类",
+							options: setFirstLevelArray(result)
+						}
 					});
 				}
 			}
