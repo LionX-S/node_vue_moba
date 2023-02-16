@@ -21,6 +21,11 @@
 					align="center">
 				</el-table-column>
 				<el-table-column
+					prop="higherLevelID"
+					label="上级分类"
+					align="center">
+				</el-table-column>
+				<el-table-column
 					prop="create_time"
 					label="创建时间"
 					width="400"
@@ -82,8 +87,8 @@
 				this.$alert("确认删除这条数据吗？", "提示", {
 					confirmButtonText: "确定",
 					callback: async () => {
-						const res = await this.$http.get(
-							`deleteCategoryById/${categoryId}`
+						const res = await this.$http.delete(
+							`categories/${categoryId}`
 						);
 						const { code, message } = res.data;
 						if (code === 200) {

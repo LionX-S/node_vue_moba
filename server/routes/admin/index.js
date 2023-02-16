@@ -1,14 +1,10 @@
-function setFirstLevelArray(result) {
-	return result.map((item, index) => {
-		return {
-			id: item.id,
-			label: item.name
-		};
-	});
-}
+
 module.exports = (app) => {
 	const express = require("express");
-	const router = express.Router();
+	// 启用通用curd接口的api配置merge params，可以从url中req.params.resource获取到数据库table名称
+	const router = express.Router({
+		mergeParams: true
+	});
 	const mysql = require("../../plugins/db");
 	// 新版nanoid不支持commonJS
 	let nanoid;
@@ -20,9 +16,9 @@ module.exports = (app) => {
 		nanoid = res.nanoid;
 	});
 	// 新增分类
-	router.post("/categories", async (req, res) => {
+	router.post("/", async (req, res) => {
 		await mysql().query(
-			`insert into categories (id,name,higherLevelID,create_time) values ("${nanoid(
+			`insert into ${req.params.resource} (id,name,higherLevelID,create_time) values ("${nanoid(
 				8
 			)}","${req.body.name}","${req.body.categoryLevelID}", NOW())`,
 			(err, result) => {
@@ -42,8 +38,8 @@ module.exports = (app) => {
 		);
 	});
 	// 加载分类列表
-	router.get("/categories", async (req, res) => {
-		await mysql().query("SELECT * FROM categories LIMIT 10", (err, result) => {
+	router.get("/", async (req, res) => {
+		await mysql().query(`SELECT * FROM ${req.params.resource} LIMIT 10`, (err, result) => {
 			if (err) {
 				res.send({
 					code: 400,
@@ -61,9 +57,9 @@ module.exports = (app) => {
 	});
 
 	// 查询并修改分类
-	router.get("/getCategoryById/:id", async (req, res) => {
+	router.get("/:id", async (req, res) => {
 		await mysql().query(
-			`select * from categories where id = '${req.params.id}'`,
+			`select * from ${req.params.resource} where id = '${req.params.id}'`,
 			(err, result) => {
 				if (err) {
 					res.send({
@@ -82,9 +78,9 @@ module.exports = (app) => {
 		);
 	});
 
-	router.put("/updateCategoryById/:id", async (req, res) => {
+	router.put("/:id", async (req, res) => {
 		await mysql().query(
-			`update categories set name='${req.body.name}', create_time=NOW() where id='${req.params.id}'`,
+			`update ${req.params.resource} set name='${req.body.name}', create_time=NOW() where id='${req.params.id}'`,
 			(err, result) => {
 				if (err) {
 					res.send({
@@ -104,9 +100,9 @@ module.exports = (app) => {
 	});
 
 	// 删除分类
-	router.get("/deleteCategoryById/:id", async (req, res) => {
+	router.delete("/:id", async (req, res) => {
 		await mysql().query(
-			`delete from categories where id = '${req.params.id}'`,
+			`delete from ${req.params.resource} where id = '${req.params.id}'`,
 			(err, result) => {
 				if (err) {
 					res.send({
@@ -124,28 +120,6 @@ module.exports = (app) => {
 		);
 	});
 
-	// 一级分类列表
-	router.get("/getFirstCategory", async (req, res) => {
-		await mysql().query(
-			'select * from categories where higherLevelID="firstLevel"',
-			(err, result) => {
-				if (err) {
-					res.send({
-						code: 400,
-						message: "获取一级分类数据失败",
-						err
-					});
-				} else {
-					res.send({
-						code: 200,
-						body: {
-							label: "一级分类",
-							options: setFirstLevelArray(result)
-						}
-					});
-				}
-			}
-		);
-	});
-	app.use("/admin/api", router);
+	// 通用curd接口
+	app.use("/admin/api/:resource", router);
 };

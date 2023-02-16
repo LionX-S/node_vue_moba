@@ -5,7 +5,7 @@
 			<el-form
 				label-width="120px"
 				@submit.native.prevent="save">
-				<el-form-item label="上级分类">
+				<el-form-item label="分类级别">
 					<el-select
 						v-model="categoryLevelValue"
 						placeholder="请选择上级分类">
@@ -51,16 +51,15 @@
 				// 一级分类
 				categoryLevel: [
 					{
-						label: "默认值",
 						options: [
 							{
 								id: "firstLevel",
-								label: "设置为一级分类"
+								label: "一级分类"
 							}
 						]
 					}
 				],
-				categoryLevelValue: ""
+				categoryLevelValue: "firstLevel"
 			};
 		},
 		methods: {
@@ -77,7 +76,7 @@
 				let res;
 				if (this.id) {
 					res = await this.$http.put(
-						`updateCategoryById/${this.id}`,
+						`categories/${this.id}`,
 						this.category
 					);
 				} else {
@@ -101,10 +100,11 @@
 			},
 			// 编辑分类功能
 			async getCategoryById(id) {
-				const res = await this.$http.get(`getCategoryById/${this.id}`);
+				const res = await this.$http.get(`categories/${this.id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
 					this.category.name = body[0].name;
+					this.categoryLevelValue = body[0].higherLevelID;
 				} else {
 					this.$message({
 						type: "error",
@@ -114,7 +114,7 @@
 			},
 			// 获取一级分类列表
 			async getFirstCategory() {
-				const res = await this.$http.get("getFirstCategory");
+				const res = await this.$httpSpecial.get("getFirstCategory");
 				const { body, message, code } = res.data;
 				if (code === 200) {
 					this.categoryLevel.push(body);
