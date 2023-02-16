@@ -5,7 +5,7 @@
 			<el-form
 				label-width="120px"
 				@submit.native.prevent="save">
-				<el-form-item label="分类级别">
+				<!-- <el-form-item label="分类级别">
 					<el-select
 						v-model="categoryLevelValue"
 						placeholder="请选择上级分类">
@@ -21,11 +21,11 @@
 							</el-option>
 						</el-option-group>
 					</el-select>
-				</el-form-item>
-				<el-form-item label="分类名称">
+				</el-form-item> -->
+				<el-form-item label="物品名称">
 					<el-input
 						v-model="category.name"
-						placeholder="请输入分类名称"></el-input>
+						placeholder="请输入物品名称"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button
@@ -42,24 +42,24 @@
 	export default {
 		props: ["id"],
 		inject: ["reload"],
-		name: "CategoryCreate",
+		name: "GoodsCreate",
 		data() {
 			return {
 				category: {
 					name: ""
 				},
-				// 一级分类
-				categoryLevel: [
-					{
-						options: [
-							{
-								id: "firstLevel",
-								label: "一级分类"
-							}
-						]
-					}
-				],
-				categoryLevelValue: "firstLevel"
+				// // 一级分类
+				// categoryLevel: [
+				// 	{
+				// 		options: [
+				// 			{
+				// 				id: "firstLevel",
+				// 				label: "一级分类"
+				// 			}
+				// 		]
+				// 	}
+				// ],
+				// categoryLevelValue: "firstLevel"
 			};
 		},
 		methods: {
@@ -76,17 +76,17 @@
 				let res;
 				if (this.id) {
 					res = await this.$http.put(
-						`categories/${this.id}`,
+						`goods/${this.id}`,
 						this.category
 					);
 				} else {
-					res = await this.$http.post("categories", {
+					res = await this.$http.post("goods", {
 						name: this.category.name,
-						higherLevelID: this.categoryLevelValue
+						categoryLevelID: this.categoryLevelValue
 					});
 				}
 				if (res.data.code === 200) {
-					this.$router.push("/categories/list");
+					this.$router.push("/goods/list");
 					this.$message({
 						type: "success",
 						message: res.data.message
@@ -100,7 +100,7 @@
 			},
 			// 编辑分类功能
 			async getCategoryById(id) {
-				const res = await this.$http.get(`categories/${this.id}`);
+				const res = await this.$http.get(`goods/${this.id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
 					this.category.name = body[0].name;
@@ -113,22 +113,22 @@
 				}
 			},
 			// 获取一级分类列表
-			async getFirstCategory() {
-				const res = await this.$httpSpecial.get("getFirstCategory");
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.categoryLevel.push(body);
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
-			}
+			// async getFirstCategory() {
+			// 	const res = await this.$httpSpecial.get("getFirstCategory");
+			// 	const { body, message, code } = res.data;
+			// 	if (code === 200) {
+			// 		this.categoryLevel.push(body);
+			// 	} else {
+			// 		this.$message({
+			// 			type: "error",
+			// 			message
+			// 		});
+			// 	}
+			// }
 		},
 		created() {
 			this.id && this.getCategoryById(this.id);
-			this.getFirstCategory();
+			// this.getFirstCategory();
 		}
 	};
 </script>

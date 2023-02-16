@@ -11,6 +11,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VueRouter);
 Vue.use(ElementUI);
+// axios
 Vue.prototype.$http = http;
 Vue.prototype.$httpSpecial = httpSpecial;
 
