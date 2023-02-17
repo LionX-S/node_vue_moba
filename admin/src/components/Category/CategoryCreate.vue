@@ -76,11 +76,11 @@
 				let res;
 				if (this.id) {
 					res = await this.$http.put(
-						`categories/${this.id}`,
+						`rest/categories/${this.id}`,
 						this.category
 					);
 				} else {
-					res = await this.$http.post("categories", {
+					res = await this.$http.post("rest/categories", {
 						name: this.category.name,
 						higherLevelID: this.categoryLevelValue
 					});
@@ -100,7 +100,7 @@
 			},
 			// 编辑分类功能
 			async getCategoryById(id) {
-				const res = await this.$http.get(`categories/${this.id}`);
+				const res = await this.$http.get(`rest/categories/${this.id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
 					this.category.name = body[0].name;
@@ -114,7 +114,7 @@
 			},
 			// 获取一级分类列表
 			async getFirstCategory() {
-				const res = await this.$httpSpecial.get("getFirstCategory");
+				const res = await this.$http.get("getFirstCategory");
 				const { body, message, code } = res.data;
 				if (code === 200) {
 					this.categoryLevel.push(body);
@@ -129,6 +129,12 @@
 		created() {
 			this.id && this.getCategoryById(this.id);
 			this.getFirstCategory();
+		},
+		beforeRouteLeave(to, from, next) {
+			if(to.path==="/categories/create") {
+				this.category.name = '';
+			}
+			next();
 		}
 	};
 </script>

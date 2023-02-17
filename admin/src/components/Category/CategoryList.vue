@@ -71,7 +71,7 @@
 				return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
 			},
 			async getCategoryList() {
-				const res = await this.$http.get("categories");
+				const res = await this.$http.get("rest/categories");
 				const { code, body, message } = res.data;
 				if (code === 200) {
 					this.categoriesList = body;
@@ -88,7 +88,7 @@
 					confirmButtonText: "确定",
 					callback: async () => {
 						const res = await this.$http.delete(
-							`categories/${categoryId}`
+							`rest/categories/${categoryId}`
 						);
 						const { code, message } = res.data;
 						if (code === 200) {

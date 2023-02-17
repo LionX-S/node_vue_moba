@@ -120,5 +120,48 @@ module.exports = (app) => {
 		);
 	});
 
-	app.use("/admin/api/:resource", router);
+	app.use("/admin/api/rest/:resource", router);
+
+
+	function setFirstLevelArray(result) {
+		return result.map((item, index) => {
+			return {
+				id: item.id,
+				label: item.name
+			};
+		});
+	}
+
+  // 一级分类列表,这个接口特殊情况 暂不做通用接口
+	app.get("/admin/api/getFirstCategory", async (req, res) => {
+		await mysql().query(
+			'select * from categories where higherLevelID="firstLevel"',
+			(err, result) => {
+				if (err) {
+					res.send({
+						code: 400,
+						message: "获取一级分类数据失败",
+						err
+					});
+				} else {
+					res.send({
+						code: 200,
+						body: {
+							label: "一级分类",
+							options: setFirstLevelArray(result)
+						}
+					});
+				}
+			}
+		);
+	});
+
+	// 上传图片接口 借用package multer
+	const multer = require('multer');
+	// __dirname为当前文件的绝对路径，这里设置为上传到哪个文件夹
+	const upload = multer({dest: __dirname + '/../../uploads'});
+	app.post("/admin/api/upload", upload.single('file'), async (req, res) => {
+		req.file.url = `http://localhost:3000/uploads/${req.file.filename}`
+		res.send(req.file);
+	})
 };

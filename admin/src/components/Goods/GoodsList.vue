@@ -2,7 +2,7 @@
 	<div>
 		<h1>分类列表</h1>
 		<el-main>
-			<el-table :data="categoriesList">
+			<el-table :data="goodsList">
 				<el-table-column
 					type="index"
 					label="序号"
@@ -24,6 +24,11 @@
 					prop="imageUrl"
 					label="物品展示"
 					align="center">
+					<template slot-scope="scope">
+						<el-image
+							style="width: 50px; height: 50px"
+							:src="scope.row.imageUrl"></el-image>
+					</template>
 				</el-table-column>
 				<el-table-column
 					prop="create_time"
@@ -47,7 +52,7 @@
 						<el-button
 							type="danger"
 							size="mini"
-							@click="deleteCategory(scope.row.id)"
+							@click="deleteGoods(scope.row.id)"
 							>删除</el-button
 						>
 					</template>
@@ -60,21 +65,21 @@
 	import moment from "moment";
 	export default {
 		name: "CategoryList",
-		inject:['reload'],
+		inject: ["reload"],
 		data() {
 			return {
-				categoriesList: []
+				goodsList: []
 			};
 		},
 		methods: {
 			dateFormate(row, column, cellValue, index) {
-				return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+				return moment(cellValue).format("YYYY-MM-DD HH:mm:ss");
 			},
-			async getCategoryList() {
-				const res = await this.$http.get("goods");
+			async getGoodsList() {
+				const res = await this.$http.get("rest/goods");
 				const { code, body, message } = res.data;
 				if (code === 200) {
-					this.categoriesList = body;
+					this.goodsList = body;
 				} else {
 					this.$message({
 						type: "error",
@@ -83,20 +88,18 @@
 				}
 			},
 
-			deleteCategory(categoryId) {
+			deleteGoods(goodsId) {
 				this.$alert("确认删除这条数据吗？", "提示", {
 					confirmButtonText: "确定",
 					callback: async () => {
-						const res = await this.$http.delete(
-							`goods/${categoryId}`
-						);
+						const res = await this.$http.delete(`rest/goods/${goodsId}`);
 						const { code, message } = res.data;
 						if (code === 200) {
 							this.$message({
 								type: "success",
 								message
 							});
-							this.reload()
+							this.reload();
 						} else {
 							this.$message({
 								type: "error",
@@ -108,7 +111,7 @@
 			}
 		},
 		created() {
-			this.getCategoryList();
+			this.getGoodsList();
 		}
 	};
 </script>

@@ -6,10 +6,10 @@ const app = express();
 app.use(require("cors")());
 // 就可以直接使用req.body
 app.use(express.json());
+// 托管静态文件,以便web端可以通过http链接访问
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 require("./routes/admin")(app);
-// admin路由特殊接口
-require("./routes/admin/specialRouter")(app);
 
 app.listen(3000, () => {
 	console.log("后台启动在3000端口");
