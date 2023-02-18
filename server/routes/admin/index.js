@@ -118,11 +118,34 @@ module.exports = (app) => {
 				}
 			}
 		);
+		await deleteImage(req);
 	});
+
+	//删除图片方法
+	async function deleteImage(req) {
+		await mysql().query(
+			`select imageUrl from ${req.params.resource} where id = '${req.params.id}'`,
+			(err, result) => {
+				if (err) {
+				} else {
+					let imagePath = result[0].imageUrl.slice(
+						result[0].imageUrl.indexOf("/uploads")
+					);
+					const fs = require("fs");
+					fs.unlink(__dirname + `/../../${imagePath}`, (err) => {
+						if (err) {
+							console.log(err);
+							return false;
+						}
+					});
+				}
+			}
+		);
+	}
 
 	app.use("/admin/api/rest/:resource", router);
 
-
+	// 包装一级类返回数据
 	function setFirstLevelArray(result) {
 		return result.map((item, index) => {
 			return {
@@ -132,7 +155,7 @@ module.exports = (app) => {
 		});
 	}
 
-  // 一级分类列表,这个接口特殊情况 暂不做通用接口
+	// 一级分类列表,这个接口特殊情况 暂不做通用接口
 	app.get("/admin/api/getFirstCategory", async (req, res) => {
 		await mysql().query(
 			'select * from categories where higherLevelID="firstLevel"',
@@ -157,11 +180,11 @@ module.exports = (app) => {
 	});
 
 	// 上传图片接口 借用package multer
-	const multer = require('multer');
+	const multer = require("multer");
 	// __dirname为当前文件的绝对路径，这里设置为上传到哪个文件夹
-	const upload = multer({dest: __dirname + '/../../uploads'});
-	app.post("/admin/api/upload", upload.single('file'), async (req, res) => {
-		req.file.url = `http://localhost:3000/uploads/${req.file.filename}`
+	const upload = multer({ dest: __dirname + "/../../uploads" });
+	app.post("/admin/api/upload", upload.single("file"), async (req, res) => {
+		req.file.url = `http://localhost:3000/uploads/${req.file.filename}`;
 		res.send(req.file);
-	})
+	});
 };

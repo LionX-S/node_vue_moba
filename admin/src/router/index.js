@@ -9,6 +9,10 @@ import CategoryList from '../components/Category/CategoryList.vue';
 import GoodsCreate from '../components/Goods/GoodsCreate.vue';
 import GoodsList from '../components/Goods/GoodsList.vue';
 
+// 英雄组件
+import HeroCreate from '../components/Hero/HeroCreate.vue';
+import HeroList from '../components/Hero/HeroList.vue';
+
 export default new VueRouter({
 	routes: [
 		{
@@ -43,6 +47,20 @@ export default new VueRouter({
 				{
 					path: "/goods/list",
 					component: GoodsList
+				},
+				// 英雄功能路由
+				{
+					path: "/heroes/create",
+					component: HeroCreate
+				},
+				{
+					path: "/heroes/create/:id",
+					component: HeroCreate,
+					props:true
+				},
+				{
+					path: "/heroes/list",
+					component: HeroList
 				}
 			]
 		}

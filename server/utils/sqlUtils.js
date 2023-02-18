@@ -27,9 +27,9 @@ module.exports = {
 		values = values.slice(0, values.length - 1);
 		let insertSQL = `insert into ${
 			req.params.resource
-		} (id,create_time,${keyArr.toString()}) values ("${nanoid(
+		} (id,create_time,${keyArr.toString()}) values ('${nanoid(
 			8
-		)}",NOW(),${values})`;
+		)}',NOW(),${values})`;
 		return insertSQL;
 	},
 	createUpdateSQL(req) {
