@@ -38,24 +38,30 @@ module.exports = (app) => {
 	});
 	// 加载表数据
 	router.get("/", async (req, res) => {
-		await mysql().query(
-			`SELECT * FROM ${req.params.resource} LIMIT 10`,
-			(err, result) => {
-				if (err) {
-					res.send({
-						code: 400,
-						message: "查询失败",
-						err
-					});
-				} else {
-					res.send({
-						code: 200,
-						message: "查询成功！",
-						body: result
-					});
-				}
+		// 加载分类列表有连表操作 走单独sql
+		let selectSQL = "";
+		if (req.params.resource === "categories") {
+			selectSQL = `SELECT a.id,a.name,a.create_time,b.name as parentsName from categories a left JOIN categories b ON a.higherLevelID = b.id;`;
+		} else if(req.params.resource === "heroes") {
+			selectSQL = 'select a.*,b.name as category from heroes a left join categories b on a.category = b.id'
+		}else {
+			selectSQL = `SELECT * FROM ${req.params.resource} LIMIT 10`;
+		}
+		await mysql().query(selectSQL, (err, result) => {
+			if (err) {
+				res.send({
+					code: 400,
+					message: "查询失败",
+					err
+				});
+			} else {
+				res.send({
+					code: 200,
+					message: "查询成功！",
+					body: result
+				});
 			}
-		);
+		});
 	});
 
 	// 根据id查询并修改标数据
@@ -178,6 +184,30 @@ module.exports = (app) => {
 			}
 		);
 	});
+
+		// 根据上级分类名称查询数据
+		app.get("/admin/api/getHeroCategory", async (req, res) => {
+			console.log("🚀 ~ file: index.js:108 ~ router.get ~ req:", req.params)
+			
+			await mysql().query(
+				`select * from categories where higherLevelID = (SELECT id FROM categories where name = '英雄')`,
+				(err, result) => {
+					if (err) {
+						res.send({
+							code: 400,
+							message: "获取数据失败",
+							err
+						});
+					} else {
+						res.send({
+							code: 200,
+							message: "查询成功！",
+							body: result
+						});
+					}
+				}
+			);
+		});
 
 	// 上传图片接口 借用package multer
 	const multer = require("multer");

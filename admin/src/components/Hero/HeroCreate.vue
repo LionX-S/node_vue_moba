@@ -4,18 +4,49 @@
 		<el-main>
 			<el-form
 				label-width="120px"
+				label-position="left"
 				@submit.native.prevent="save">
 				<el-form-item label="英雄名称">
 					<el-input
 						v-model="heroes.name"
 						placeholder="请输入英雄名称"></el-input>
 				</el-form-item>
-				<el-form-item label="英雄描述">
+				<el-form-item label="英雄称号">
+					<el-input
+						v-model="heroes.nickName"
+						placeholder="请输入英雄称号"></el-input>
+				</el-form-item>
+				<el-form-item label="英雄技能"></el-form-item>
+
+				<el-form-item label="技能1">
+					<el-input></el-input>
+					<el-input></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button @click="skillsNum++">新增技能</el-button>
+				</el-form-item>
+
+				<el-form-item label="英雄故事">
 					<el-input
 						v-model="heroes.describes"
-						placeholder="请输入英雄描述"></el-input>
+						placeholder="请输入英雄故事"></el-input>
 				</el-form-item>
-				<el-form-item label="英雄图片">
+				<el-form-item label="英雄分类">
+					<el-select
+						v-model="heroes.category"
+						placeholder="请选择">
+						<el-option
+							v-for="item in heroCategoryOpt"
+							:key="item.id"
+							:label="item.name"
+							:value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="难度等级">
+					<el-rate v-model="heroes.score"></el-rate>
+				</el-form-item>
+				<el-form-item label="英雄头像">
 					<el-upload
 						class="avatar-uploader"
 						:action="$http.defaults.baseURL + '/upload'"
@@ -23,8 +54,8 @@
 						:on-success="handleImageSuccess"
 						:before-upload="beforeAvatarUpload">
 						<img
-							v-if="heroes.imageUrl"
-							:src="heroes.imageUrl"
+							v-if="heroes.avatar"
+							:src="heroes.avatar"
 							class="avatar" />
 						<i
 							v-else
@@ -50,12 +81,21 @@
 			return {
 				heroes: {
 					name: "",
-					imageUrl: "",
-					describes: ""
-				}
+					nickName: "",
+					avatar: "",
+					describes: "",
+					category: "",
+					score: 0,
+					skills: []
+				},
+				heroCategoryOpt: [],
+				skillsNum: 1
 			};
 		},
 		methods: {
+			addSkills() {
+				this.skillsNum++;
+			},
 			async save() {
 				// 填写数据校验
 				if (!this.heroes.name.trim()) {
@@ -87,12 +127,15 @@
 			},
 			// 编辑分类功能
 			async getHeroesById(id) {
-				const res = await this.$http.get(`rest/heroes/${this.id}`);
+				const res = await this.$http.get(`rest/heroes/${id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
 					this.heroes.name = body[0].name;
+					this.heroes.nickName = body[0].nickName;
 					this.heroes.describes = body[0].describes;
-					this.heroes.imageUrl = body[0].imageUrl;
+					this.heroes.avatar = body[0].avatar;
+					this.heroes.category = body[0].category;
+					this.heroes.score = body[0].score;
 				} else {
 					this.$message({
 						type: "error",
@@ -100,8 +143,22 @@
 					});
 				}
 			},
+			// 查询英雄大分类下所有分类
+			async getCategoryByHero(categoryName) {
+				const res = await this.$http.get(`getHeroCategory`);
+				const { body, message, code } = res.data;
+				if (code === 200) {
+					this.heroCategoryOpt = body;
+				} else {
+					this.$message({
+						type: "error",
+						message
+					});
+				}
+			},
+
 			handleImageSuccess(res) {
-				this.heroes.imageUrl = res.url;
+				this.heroes.avatar = res.url;
 			},
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === "image/jpeg";
@@ -118,14 +175,18 @@
 		},
 		created() {
 			this.id && this.getHeroesById(this.id);
+			this.getCategoryByHero("英雄");
 		},
 
 		// 解决由编辑页面直接点击新建功能时，form遗留数据的issue
 		beforeRouteLeave(to, from, next) {
 			if (to.path === "/heroes/create") {
 				this.heroes.name = "";
-				this.heroes.imageUrl = "";
+				this.heroes.avatar = "";
 				this.heroes.describes = "";
+				this.heroes.nickName = "";
+				this.heroes.score = "";
+				this.heroes.avatar = "";
 			}
 			next();
 		}

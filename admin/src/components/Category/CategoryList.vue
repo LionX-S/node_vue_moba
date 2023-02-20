@@ -2,16 +2,13 @@
 	<div>
 		<h1>分类列表</h1>
 		<el-main>
-			<el-table :data="categoriesList">
+			<el-table
+				:data="categoriesList"
+				:default-sort="{ prop: 'create_time', order: 'descending' }"
+				border>
 				<el-table-column
 					type="index"
 					label="序号"
-					width="220"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="id"
-					label="id"
 					width="220"
 					align="center">
 				</el-table-column>
@@ -21,7 +18,7 @@
 					align="center">
 				</el-table-column>
 				<el-table-column
-					prop="higherLevelID"
+					prop="parentsName"
 					label="上级分类"
 					align="center">
 				</el-table-column>
@@ -60,7 +57,7 @@
 	import moment from "moment";
 	export default {
 		name: "CategoryList",
-		inject:['reload'],
+		inject: ["reload"],
 		data() {
 			return {
 				categoriesList: []
@@ -68,7 +65,7 @@
 		},
 		methods: {
 			dateFormate(row, column, cellValue, index) {
-				return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+				return moment(cellValue).format("YYYY-MM-DD HH:mm:ss");
 			},
 			async getCategoryList() {
 				const res = await this.$http.get("rest/categories");
@@ -96,7 +93,7 @@
 								type: "success",
 								message
 							});
-							this.reload()
+							this.reload();
 						} else {
 							this.$message({
 								type: "error",

@@ -2,17 +2,14 @@
 	<div>
 		<h1>分类列表</h1>
 		<el-main>
-			<el-table :data="heroesList">
+			<el-table
+				:data="heroesList"
+				border>
 				<el-table-column
+					fixed
 					type="index"
 					label="序号"
 					width="50"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="id"
-					label="id"
-					width="150"
 					align="center">
 				</el-table-column>
 				<el-table-column
@@ -21,18 +18,33 @@
 					align="center">
 				</el-table-column>
 				<el-table-column
+					prop="nickName"
+					label="英雄称号"
+					align="center">
+				</el-table-column>
+				<el-table-column
+					prop="category"
+					label="英雄分类"
+					align="center">
+				</el-table-column>
+				<el-table-column
 					prop="describes"
 					label="英雄描述"
 					align="center">
 				</el-table-column>
 				<el-table-column
-					prop="imageUrl"
+					prop="score"
+					label="难度等级"
+					align="center">
+				</el-table-column>
+				<el-table-column
+					prop="avatar"
 					label="英雄展示"
 					align="center">
 					<template slot-scope="scope">
 						<el-image
 							style="width: 50px; height: 50px"
-							:src="scope.row.imageUrl"></el-image>
+							:src="scope.row.avatar"></el-image>
 					</template>
 				</el-table-column>
 				<el-table-column

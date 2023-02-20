@@ -2,17 +2,11 @@
 	<div>
 		<h1>分类列表</h1>
 		<el-main>
-			<el-table :data="goodsList">
+			<el-table :data="goodsList" border >
 				<el-table-column
 					type="index"
 					label="序号"
 					width="220"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="id"
-					label="id"
-					width="150"
 					align="center">
 				</el-table-column>
 				<el-table-column

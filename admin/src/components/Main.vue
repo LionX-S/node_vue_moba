@@ -3,30 +3,21 @@
 		<el-aside
 			width="200px"
 			style="background-color: rgb(238, 241, 246)">
-			<el-menu router>
+			<el-menu router :default-openeds="['1']">
 				<el-submenu index="1">
 					<template slot="title"
-						><i class="el-icon-s-order"></i>分类管理</template
+						><i class="el-icon-s-order"></i>内容管理</template
 					>
 					<el-menu-item-group>
+						<template slot="title">分类管理</template>
 						<el-menu-item index="/categories/create">新建分类</el-menu-item>
 						<el-menu-item index="/categories/list">分类列表</el-menu-item>
 					</el-menu-item-group>
-				</el-submenu>
-				<el-submenu index="2">
-					<template slot="title"
-						><i class="el-icon-files"></i>物品管理</template
-					>
-					<el-menu-item-group>
+					<el-menu-item-group title="物品管理">
 						<el-menu-item index="/goods/create">新建物品</el-menu-item>
 						<el-menu-item index="/goods/list">物品列表</el-menu-item>
 					</el-menu-item-group>
-				</el-submenu>
-				<el-submenu index="3">
-					<template slot="title"
-						><i class="el-icon-user"></i>英雄管理</template
-					>
-					<el-menu-item-group>
+					<el-menu-item-group title="英雄管理">
 						<el-menu-item index="/heroes/create">新建英雄</el-menu-item>
 						<el-menu-item index="/heroes/list">英雄列表</el-menu-item>
 					</el-menu-item-group>
