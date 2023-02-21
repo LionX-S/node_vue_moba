@@ -34,7 +34,8 @@ module.exports = {
 	},
 	createUpdateSQL(req) {
 		let values = "";
-		// delete req.body.id;
+		delete req.body.id;
+		delete req.body.create_time;
 		let bodyArr = Object.entries(req.body);
 		let keyArr = bodyArr.map((item, index) => {
 			return item[0];
@@ -49,7 +50,7 @@ module.exports = {
 			values += `${keyArr[index]}='${valuesArr[index]}',`;
 		});
 		values = values.slice(0, values.length - 1);
-		let updateSQL = `update ${req.params.resource} set ${values} where id='${req.params.id}'`;
+		let updateSQL = `update ${req.params.resource} set ${values}, create_time=NOW() where id='${req.params.id}'`;
 		return updateSQL;
 	}
 };
