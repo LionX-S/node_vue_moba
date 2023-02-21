@@ -69,7 +69,7 @@
 						<el-button
 							type="danger"
 							size="mini"
-							@click="deleteHeroes(scope.row.id)"
+							@click="deleteHeroes(scope.row)"
 							>删除</el-button
 						>
 					</template>
@@ -80,6 +80,7 @@
 </template>
 <script>
 	import moment from "moment";
+	import {deleteImage} from '../../utils/utils';
 	export default {
 		name: "HeroList",
 		data() {
@@ -104,17 +105,24 @@
 				}
 			},
 
-			deleteHeroes(heroesId) {
-				this.$alert("确认删除这条数据吗？", "提示", {
+			deleteHeroes(rowData) {
+				this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
 					confirmButtonText: "确定",
-					callback: async () => {
-						const res = await this.$http.delete(`rest/heroes/${heroesId}`);
+					cancelButtonText: "取消",
+					type: "warning"
+				}).then(async () => {
+						const res = await this.$http.delete(`rest/heroes/${rowData.id}`);
 						const { code, message } = res.data;
 						if (code === 200) {
 							this.$message({
 								type: "success",
 								message
 							});
+							// 删除已经上传的图片
+							deleteImage(rowData.avatar);
+							JSON.parse(rowData.skills).map((item) => {
+								deleteImage(item.skillImage);
+							})
 							this.getHeroesList();
 						} else {
 							this.$message({
@@ -122,8 +130,12 @@
 								message
 							});
 						}
-					}
-				});
+					}).catch(() => {
+						this.$message({
+							type: "info",
+							message: "已取消删除"
+						});
+					});
 			}
 		},
 		created() {

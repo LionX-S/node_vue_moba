@@ -33,6 +33,11 @@
 						native-type="submit"
 						>保存</el-button
 					>
+					<el-button
+						type="danger"
+						@click="cancel"
+						>取消</el-button
+					>
 				</el-form-item>
 			</el-form>
 		</el-main>
@@ -97,6 +102,10 @@
 						message: res.data.message
 					});
 				}
+			},
+			// 取消功能
+			async cancel() {
+				this.$router.push("/categories/list")
 			},
 			// 编辑分类功能
 			async getCategoryById(id) {

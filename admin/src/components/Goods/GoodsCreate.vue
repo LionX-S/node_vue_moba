@@ -32,12 +32,19 @@
 						native-type="submit"
 						>保存</el-button
 					>
+					<el-button
+						type="danger"
+						@click="cancel"
+						>取消</el-button
+					>
 				</el-form-item>
 			</el-form>
 		</el-main>
 	</div>
 </template>
 <script>
+import { deleteImage } from '@/utils/utils';
+
 	export default {
 		props: ["id"],
 		inject: ["reload"],
@@ -83,13 +90,20 @@
 					});
 				}
 			},
+			// 取消功能
+			async cancel() {
+				// 如果已经上传了图片，则删除(只针对新建信息时删除图片，编辑功能时不删除)
+				if(!this.id && this.goods.imageUrl !== '') {
+					await deleteImage(this.goods.imageUrl);
+				}
+				this.$router.push("/goods/list")
+			},
 			// 编辑分类功能
 			async getGoodsById(id) {
 				const res = await this.$http.get(`rest/goods/${this.id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
-					this.goods.name = body[0].name;
-					this.goods.imageUrl = body[0].imageUrl;
+					this.goods = {...this.goods, ...body[0]};
 				} else {
 					this.$message({
 						type: "error",

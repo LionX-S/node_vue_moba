@@ -16,16 +16,58 @@
 						v-model="heroes.nickName"
 						placeholder="请输入英雄称号"></el-input>
 				</el-form-item>
-				<el-form-item label="英雄技能"></el-form-item>
-
-				<el-form-item label="技能1">
-					<el-input></el-input>
-					<el-input></el-input>
+				<el-form-item label="英雄技能">
+					<el-button
+						v-if="!heroes.skills.length"
+						@click="addSkills"
+						plain
+						type="primary"
+						>新增技能</el-button
+					>
 				</el-form-item>
-				<el-form-item>
-					<el-button @click="skillsNum++">新增技能</el-button>
+				<el-main
+					v-for="(item, index) in heroes.skills"
+					:key="index">
+					<el-form-item :label="`技能${index + 1}名称`">
+						<el-input v-model="item.skillName"></el-input>
+					</el-form-item>
+					<el-form-item :label="`技能${index + 1}描述`">
+						<el-input v-model="item.skillDesc"></el-input>
+					</el-form-item>
+					<el-form-item :label="`技能${index + 1}图片`">
+						<el-upload
+							class="avatar-uploader"
+							:action="$http.defaults.baseURL + '/upload'"
+							:show-file-list="false"
+							:on-success="
+								(response) => handleSkillImageSuccess(response, index)
+							"
+							:before-upload="beforeAvatarUpload">
+							<img
+								v-if="item.skillImage"
+								:src="item.skillImage"
+								class="avatar" />
+							<i
+								v-else
+								class="el-icon-plus avatar-uploader-icon"></i>
+						</el-upload>
+					</el-form-item>
+					<el-form-item>
+						<el-button
+							type="danger"
+							@click="deleteSkill(index)"
+							>删除</el-button
+						>
+					</el-form-item>
+				</el-main>
+				<el-form-item v-if="heroes.skills.length">
+					<el-button
+						@click="addSkills"
+						plain
+						type="primary"
+						>新增技能</el-button
+					>
 				</el-form-item>
-
 				<el-form-item label="英雄故事">
 					<el-input
 						v-model="heroes.describes"
@@ -68,12 +110,18 @@
 						native-type="submit"
 						>保存</el-button
 					>
+					<el-button
+						type="danger"
+						@click="cancel"
+						>取消</el-button
+					>
 				</el-form-item>
 			</el-form>
 		</el-main>
 	</div>
 </template>
 <script>
+	import { deleteImage } from "../../utils/utils";
 	export default {
 		props: ["id"],
 		name: "HeroesCreate",
@@ -88,13 +136,20 @@
 					score: 0,
 					skills: []
 				},
-				heroCategoryOpt: [],
-				skillsNum: 1
+				heroCategoryOpt: []
 			};
 		},
 		methods: {
 			addSkills() {
-				this.skillsNum++;
+				this.heroes.skills.push({
+					skillName: "",
+					skillDesc: "",
+					skillImage: ""
+				});
+			},
+			deleteSkill(index) {
+				deleteImage(this.heroes.skills[index].skillImage);
+				this.heroes.skills.splice(index, 1);
 			},
 			async save() {
 				// 填写数据校验
@@ -110,7 +165,10 @@
 				if (this.id) {
 					res = await this.$http.put(`rest/heroes/${this.id}`, this.heroes);
 				} else {
-					res = await this.$http.post("rest/heroes", this.heroes);
+					res = await this.$http.post("rest/heroes", {
+						...this.heroes,
+						skills: JSON.stringify(this.heroes.skills)
+					});
 				}
 				if (res.data.code === 200) {
 					this.$router.push("/heroes/list");
@@ -125,17 +183,25 @@
 					});
 				}
 			},
+			// 取消功能
+			async cancel() {
+				if(!this.id){
+					this.heroes.avatar !== "" && (await deleteImage(this.heroes.avatar));
+					this.heroes.skills.length &&
+						this.heroes.skills.map((item) => {
+							if (item.skillImage !== "") {
+								deleteImage(skillImage);
+							}
+						});
+				}
+				this.$router.push("/heroes/list");
+			},
 			// 编辑分类功能
 			async getHeroesById(id) {
 				const res = await this.$http.get(`rest/heroes/${id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
-					this.heroes.name = body[0].name;
-					this.heroes.nickName = body[0].nickName;
-					this.heroes.describes = body[0].describes;
-					this.heroes.avatar = body[0].avatar;
-					this.heroes.category = body[0].category;
-					this.heroes.score = body[0].score;
+					this.heroes = {...this.heroes, ...body[0], skills:JSON.parse(body[0].skills)}
 				} else {
 					this.$message({
 						type: "error",
@@ -160,17 +226,20 @@
 			handleImageSuccess(res) {
 				this.heroes.avatar = res.url;
 			},
+			handleSkillImageSuccess(res, index) {
+				this.heroes.skills[index].skillImage = res.url;
+			},
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === "image/jpeg";
-				const isLt2M = file.size / 1024 / 1024 < 2;
+				const isLt1M = file.size / 1024 / 1024 < 1;
 
 				if (!isJPG) {
 					this.$message.error("上传头像图片只能是 JPG 格式!");
 				}
-				if (!isLt2M) {
-					this.$message.error("上传头像图片大小不能超过 2MB!");
+				if (!isLt1M) {
+					this.$message.error("上传头像图片大小不能超过 1MB!");
 				}
-				return isJPG && isLt2M;
+				return isJPG && isLt1M;
 			}
 		},
 		created() {
@@ -182,11 +251,12 @@
 		beforeRouteLeave(to, from, next) {
 			if (to.path === "/heroes/create") {
 				this.heroes.name = "";
+				this.heroes.nickName = "";
 				this.heroes.avatar = "";
 				this.heroes.describes = "";
-				this.heroes.nickName = "";
+				this.heroes.category = "";
 				this.heroes.score = "";
-				this.heroes.avatar = "";
+				this.heroes.skills = [];
 			}
 			next();
 		}
@@ -206,14 +276,17 @@
 	.avatar-uploader-icon {
 		font-size: 28px;
 		color: #8c939d;
-		width: 178px;
-		height: 178px;
-		line-height: 178px;
+		width: 78px;
+		height: 78px;
+		line-height: 78px;
 		text-align: center;
 	}
 	.avatar {
-		width: 178px;
-		height: 178px;
+		width: 78px;
+		height: 78px;
 		display: block;
+	}
+	.skillsItem {
+		padding-left: 50px;
 	}
 </style>

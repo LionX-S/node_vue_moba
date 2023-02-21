@@ -2,7 +2,9 @@
 	<div>
 		<h1>分类列表</h1>
 		<el-main>
-			<el-table :data="goodsList" border >
+			<el-table
+				:data="goodsList"
+				border>
 				<el-table-column
 					type="index"
 					label="序号"
@@ -46,7 +48,7 @@
 						<el-button
 							type="danger"
 							size="mini"
-							@click="deleteGoods(scope.row.id)"
+							@click="deleteGoods(scope.row.id, scope.row.imageUrl)"
 							>删除</el-button
 						>
 					</template>
@@ -57,6 +59,7 @@
 </template>
 <script>
 	import moment from "moment";
+	import { deleteImage } from "../../utils/utils";
 	export default {
 		name: "CategoryList",
 		inject: ["reload"],
@@ -82,10 +85,12 @@
 				}
 			},
 
-			deleteGoods(goodsId) {
-				this.$alert("确认删除这条数据吗？", "提示", {
+			deleteGoods(goodsId, imageUrl) {
+				this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
 					confirmButtonText: "确定",
-					callback: async () => {
+					cancelButtonText: "取消",
+					type: "warning"
+				}).then(async () => {
 						const res = await this.$http.delete(`rest/goods/${goodsId}`);
 						const { code, message } = res.data;
 						if (code === 200) {
@@ -93,6 +98,7 @@
 								type: "success",
 								message
 							});
+							deleteImage(imageUrl);
 							this.reload();
 						} else {
 							this.$message({
@@ -100,8 +106,12 @@
 								message
 							});
 						}
-					}
-				});
+				}).catch(() => {
+						this.$message({
+							type: "info",
+							message: "已取消删除"
+						});
+					});
 			}
 		},
 		created() {

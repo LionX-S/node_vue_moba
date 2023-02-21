@@ -42,9 +42,10 @@ module.exports = (app) => {
 		let selectSQL = "";
 		if (req.params.resource === "categories") {
 			selectSQL = `SELECT a.id,a.name,a.create_time,b.name as parentsName from categories a left JOIN categories b ON a.higherLevelID = b.id;`;
-		} else if(req.params.resource === "heroes") {
-			selectSQL = 'select a.*,b.name as category from heroes a left join categories b on a.category = b.id'
-		}else {
+		} else if (req.params.resource === "heroes") {
+			selectSQL =
+				"select a.*,b.name as category from heroes a left join categories b on a.category = b.id";
+		} else {
 			selectSQL = `SELECT * FROM ${req.params.resource} LIMIT 10`;
 		}
 		await mysql().query(selectSQL, (err, result) => {
@@ -124,30 +125,7 @@ module.exports = (app) => {
 				}
 			}
 		);
-		await deleteImage(req);
 	});
-
-	//删除图片方法
-	async function deleteImage(req) {
-		await mysql().query(
-			`select imageUrl from ${req.params.resource} where id = '${req.params.id}'`,
-			(err, result) => {
-				if (err) {
-				} else {
-					let imagePath = result[0].imageUrl.slice(
-						result[0].imageUrl.indexOf("/uploads")
-					);
-					const fs = require("fs");
-					fs.unlink(__dirname + `/../../${imagePath}`, (err) => {
-						if (err) {
-							console.log(err);
-							return false;
-						}
-					});
-				}
-			}
-		);
-	}
 
 	app.use("/admin/api/rest/:resource", router);
 
@@ -185,29 +163,38 @@ module.exports = (app) => {
 		);
 	});
 
-		// 根据上级分类名称查询数据
-		app.get("/admin/api/getHeroCategory", async (req, res) => {
-			console.log("🚀 ~ file: index.js:108 ~ router.get ~ req:", req.params)
-			
-			await mysql().query(
-				`select * from categories where higherLevelID = (SELECT id FROM categories where name = '英雄')`,
-				(err, result) => {
-					if (err) {
-						res.send({
-							code: 400,
-							message: "获取数据失败",
-							err
-						});
-					} else {
-						res.send({
-							code: 200,
-							message: "查询成功！",
-							body: result
-						});
-					}
+	// 根据上级分类名称查询数据
+	app.get("/admin/api/getHeroCategory", async (req, res) => {
+		await mysql().query(
+			`select * from categories where higherLevelID = (SELECT id FROM categories where name = '英雄')`,
+			(err, result) => {
+				if (err) {
+					res.send({
+						code: 400,
+						message: "获取数据失败",
+						err
+					});
+				} else {
+					res.send({
+						code: 200,
+						message: "查询成功！",
+						body: result
+					});
 				}
-			);
+			}
+		);
+	});
+
+	// 删除上传的图片
+	app.delete("/admin/api/deleteImage/uploads/:imageID",(req, res) => {
+		const fs = require("fs");
+		fs.unlink(__dirname + `/../../uploads/${req.params.imageID}`, (err) => {
+			if (err) {
+				console.log(err);
+				return false;
+			}
 		});
+	});
 
 	// 上传图片接口 借用package multer
 	const multer = require("multer");
