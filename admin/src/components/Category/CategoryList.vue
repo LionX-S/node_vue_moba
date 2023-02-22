@@ -1,57 +1,55 @@
 <template lang="">
-	<div>
+	<el-main>
 		<h1>分类列表</h1>
-		<el-main>
-			<el-table
-				:data="categoriesList"
-				:default-sort="{ prop: 'create_time', order: 'descending' }"
-				border>
-				<el-table-column
-					type="index"
-					label="序号"
-					width="220"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="name"
-					label="分类名称"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="parentsName"
-					label="上级分类"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="create_time"
-					label="创建时间"
-					width="400"
-					:formatter="dateFormate"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					fixed="right"
-					label="操作"
-					width="180"
-					align="center">
-					<template slot-scope="scope">
-						<el-button
-							type="primary"
-							size="mini"
-							@click="$router.push(`/categories/create/${scope.row.id}`)"
-							>编辑</el-button
-						>
-						<el-button
-							type="danger"
-							size="mini"
-							@click="deleteCategory(scope.row.id)"
-							>删除</el-button
-						>
-					</template>
-				</el-table-column>
-			</el-table>
-		</el-main>
-	</div>
+		<el-table
+			:data="categoriesList"
+			:default-sort="{ prop: 'create_time', order: 'descending' }"
+			border>
+			<el-table-column
+				type="index"
+				label="序号"
+				width="220"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="name"
+				label="分类名称"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="parentsName"
+				label="上级分类"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="create_time"
+				label="创建时间"
+				width="400"
+				:formatter="dateFormate"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				fixed="right"
+				label="操作"
+				width="180"
+				align="center">
+				<template slot-scope="scope">
+					<el-button
+						type="primary"
+						size="mini"
+						@click="$router.push(`/categories/create/${scope.row.id}`)"
+						>编辑</el-button
+					>
+					<el-button
+						type="danger"
+						size="mini"
+						@click="deleteCategory(scope.row.id)"
+						>删除</el-button
+					>
+				</template>
+			</el-table-column>
+		</el-table>
+	</el-main>
 </template>
 <script>
 	import moment from "moment";
@@ -85,7 +83,8 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				}).then(async () => {
+				})
+					.then(async () => {
 						const res = await this.$http.delete(
 							`rest/categories/${categoryId}`
 						);
@@ -102,7 +101,8 @@
 								message
 							});
 						}
-					}).catch(() => {
+					})
+					.catch(() => {
 						this.$message({
 							type: "info",
 							message: "已取消删除"

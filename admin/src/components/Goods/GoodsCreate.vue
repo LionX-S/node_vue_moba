@@ -1,49 +1,48 @@
 <template lang="">
-	<div>
+	<el-main>
 		<h1>{{ id ? "编辑" : "新建" }}物品</h1>
-		<el-main>
-			<el-form
-				label-width="120px"
-				@submit.native.prevent="save">
-				<el-form-item label="物品名称">
-					<el-input
-						v-model="goods.name"
-						placeholder="请输入物品名称"></el-input>
-				</el-form-item>
-				<el-form-item label="物品图片">
-					<el-upload
-						class="avatar-uploader"
-						:action="$http.defaults.baseURL+'/upload'"
-						:show-file-list="false"
-						:on-success="handleImageSuccess"
-						:before-upload="beforeAvatarUpload">
-						<img
-							v-if="goods.imageUrl"
-							:src="goods.imageUrl"
-							class="avatar" />
-						<i
-							v-else
-							class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
-				<el-form-item>
-					<el-button
-						type="primary"
-						native-type="submit"
-						>保存</el-button
-					>
-					<el-button
-						type="danger"
-						@click="cancel"
-						>取消</el-button
-					>
-				</el-form-item>
-			</el-form>
-		</el-main>
-	</div>
+		<el-form
+			label-width="120px"
+			label-position="left"
+			@submit.native.prevent="save">
+			<el-form-item label="物品名称">
+				<el-input
+					v-model="goods.name"
+					placeholder="请输入物品名称"></el-input>
+			</el-form-item>
+			<el-form-item label="物品图片">
+				<el-upload
+					class="avatar-uploader"
+					:action="$http.defaults.baseURL + '/upload'"
+					:show-file-list="false"
+					:on-success="handleImageSuccess"
+					:before-upload="beforeAvatarUpload">
+					<img
+						v-if="goods.imageUrl"
+						:src="goods.imageUrl"
+						class="avatar" />
+					<i
+						v-else
+						class="el-icon-plus avatar-uploader-icon"></i>
+				</el-upload>
+			</el-form-item>
+			<el-form-item>
+				<el-button
+					type="primary"
+					native-type="submit"
+					>保存</el-button
+				>
+				<el-button
+					type="danger"
+					@click="cancel"
+					>取消</el-button
+				>
+			</el-form-item>
+		</el-form>
+	</el-main>
 </template>
 <script>
-import { deleteImage } from '@/utils/utils';
+	import { deleteImage } from "@/utils/utils";
 
 	export default {
 		props: ["id"],
@@ -93,17 +92,17 @@ import { deleteImage } from '@/utils/utils';
 			// 取消功能
 			async cancel() {
 				// 如果已经上传了图片，则删除(只针对新建信息时删除图片，编辑功能时不删除)
-				if(!this.id && this.goods.imageUrl !== '') {
+				if (!this.id && this.goods.imageUrl !== "") {
 					await deleteImage(this.goods.imageUrl);
 				}
-				this.$router.push("/goods/list")
+				this.$router.push("/goods/list");
 			},
 			// 编辑分类功能
 			async getGoodsById(id) {
 				const res = await this.$http.get(`rest/goods/${this.id}`);
 				const { body, message, code } = res.data;
 				if (code === 200) {
-					this.goods = {...this.goods, ...body[0]};
+					this.goods = { ...this.goods, ...body[0] };
 				} else {
 					this.$message({
 						type: "error",
@@ -133,13 +132,12 @@ import { deleteImage } from '@/utils/utils';
 
 		// 解决由编辑页面直接点击新建功能时，form遗留数据的issue
 		beforeRouteLeave(to, from, next) {
-			if(to.path==="/goods/create") {
-				this.goods.name = '';
-				this.goods.imageUrl = ''
+			if (to.path === "/goods/create") {
+				this.goods.name = "";
+				this.goods.imageUrl = "";
 			}
 			next();
 		}
 	};
 </script>
-<style>
-</style>
+<style></style>

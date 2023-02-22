@@ -42,9 +42,9 @@ module.exports = (app) => {
 		let selectSQL = "";
 		if (req.params.resource === "categories") {
 			selectSQL = `SELECT a.id,a.name,a.create_time,b.name as parentsName from categories a left JOIN categories b ON a.higherLevelID = b.id;`;
-		} else if (req.params.resource === "heroes") {
+		} else if (req.params.resource === "heroes" || req.params.resource === 'articles') {
 			selectSQL =
-				"select a.*,b.name as category from heroes a left join categories b on a.category = b.id";
+				`select a.*,b.name as category from ${req.params.resource} a left join categories b on a.category = b.id`;
 		} else {
 			selectSQL = `SELECT * FROM ${req.params.resource} LIMIT 10`;
 		}
@@ -163,10 +163,10 @@ module.exports = (app) => {
 		);
 	});
 
-	// 根据上级分类名称查询数据
-	app.get("/admin/api/getHeroCategory", async (req, res) => {
+	// 根据一级分类名称子分类
+	app.get("/admin/api/getChildCategory/:firstCategory", async (req, res) => {
 		await mysql().query(
-			`select * from categories where higherLevelID = (SELECT id FROM categories where name = '英雄')`,
+			`select * from categories where higherLevelID = (SELECT id FROM categories where name = '${req.params.firstCategory}')`,
 			(err, result) => {
 				if (err) {
 					res.send({

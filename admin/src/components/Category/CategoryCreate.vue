@@ -1,47 +1,46 @@
 <template lang="">
-	<div>
+	<el-main>
 		<h1>{{ id ? "编辑" : "新建" }}分类</h1>
-		<el-main>
-			<el-form
-				label-width="120px"
-				@submit.native.prevent="save">
-				<el-form-item label="分类级别">
-					<el-select
-						v-model="categoryLevelValue"
-						placeholder="请选择上级分类">
-						<el-option-group
-							v-for="group in categoryLevel"
-							:key="group.label"
-							:label="group.label">
-							<el-option
-								v-for="item in group.options"
-								:key="item.id"
-								:label="item.label"
-								:value="item.id">
-							</el-option>
-						</el-option-group>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="分类名称">
-					<el-input
-						v-model="category.name"
-						placeholder="请输入分类名称"></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-button
-						type="primary"
-						native-type="submit"
-						>保存</el-button
-					>
-					<el-button
-						type="danger"
-						@click="cancel"
-						>取消</el-button
-					>
-				</el-form-item>
-			</el-form>
-		</el-main>
-	</div>
+		<el-form
+			label-width="120px"
+			label-position="left"
+			@submit.native.prevent="save">
+			<el-form-item label="分类级别">
+				<el-select
+					v-model="categoryLevelValue"
+					placeholder="请选择上级分类">
+					<el-option-group
+						v-for="group in categoryLevel"
+						:key="group.label"
+						:label="group.label">
+						<el-option
+							v-for="item in group.options"
+							:key="item.id"
+							:label="item.label"
+							:value="item.id">
+						</el-option>
+					</el-option-group>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="分类名称">
+				<el-input
+					v-model="category.name"
+					placeholder="请输入分类名称"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-button
+					type="primary"
+					native-type="submit"
+					>保存</el-button
+				>
+				<el-button
+					type="danger"
+					@click="cancel"
+					>取消</el-button
+				>
+			</el-form-item>
+		</el-form>
+	</el-main>
 </template>
 <script>
 	export default {
@@ -105,7 +104,7 @@
 			},
 			// 取消功能
 			async cancel() {
-				this.$router.push("/categories/list")
+				this.$router.push("/categories/list");
 			},
 			// 编辑分类功能
 			async getCategoryById(id) {
@@ -140,8 +139,8 @@
 			this.getFirstCategory();
 		},
 		beforeRouteLeave(to, from, next) {
-			if(to.path==="/categories/create") {
-				this.category.name = '';
+			if (to.path === "/categories/create") {
+				this.category.name = "";
 			}
 			next();
 		}

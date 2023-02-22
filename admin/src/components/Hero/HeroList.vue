@@ -1,86 +1,84 @@
 <template lang="">
-	<div>
+	<el-main>
 		<h1>分类列表</h1>
-		<el-main>
-			<el-table
-				:data="heroesList"
-				border>
-				<el-table-column
-					fixed
-					type="index"
-					label="序号"
-					width="50"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="name"
-					label="英雄名称"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="nickName"
-					label="英雄称号"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="category"
-					label="英雄分类"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="describes"
-					label="英雄描述"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="score"
-					label="难度等级"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					prop="avatar"
-					label="英雄展示"
-					align="center">
-					<template slot-scope="scope">
-						<el-image
-							style="width: 50px; height: 50px"
-							:src="scope.row.avatar"></el-image>
-					</template>
-				</el-table-column>
-				<el-table-column
-					prop="create_time"
-					label="创建时间"
-					width="200"
-					:formatter="dateFormate"
-					align="center">
-				</el-table-column>
-				<el-table-column
-					fixed="right"
-					label="操作"
-					width="180"
-					align="center">
-					<template slot-scope="scope">
-						<el-button
-							type="primary"
-							size="mini"
-							@click="$router.push(`/heroes/create/${scope.row.id}`)"
-							>编辑</el-button
-						>
-						<el-button
-							type="danger"
-							size="mini"
-							@click="deleteHeroes(scope.row)"
-							>删除</el-button
-						>
-					</template>
-				</el-table-column>
-			</el-table>
-		</el-main>
-	</div>
+		<el-table
+			:data="heroesList"
+			border>
+			<el-table-column
+				fixed
+				type="index"
+				label="序号"
+				width="50"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="name"
+				label="英雄名称"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="nickName"
+				label="英雄称号"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="category"
+				label="英雄分类"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="describes"
+				label="英雄描述"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="score"
+				label="难度等级"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="avatar"
+				label="英雄展示"
+				align="center">
+				<template slot-scope="scope">
+					<el-image
+						style="width: 50px; height: 50px"
+						:src="scope.row.avatar"></el-image>
+				</template>
+			</el-table-column>
+			<el-table-column
+				prop="create_time"
+				label="创建时间"
+				width="200"
+				:formatter="dateFormate"
+				align="center">
+			</el-table-column>
+			<el-table-column
+				fixed="right"
+				label="操作"
+				width="180"
+				align="center">
+				<template slot-scope="scope">
+					<el-button
+						type="primary"
+						size="mini"
+						@click="$router.push(`/heroes/create/${scope.row.id}`)"
+						>编辑</el-button
+					>
+					<el-button
+						type="danger"
+						size="mini"
+						@click="deleteHeroes(scope.row)"
+						>删除</el-button
+					>
+				</template>
+			</el-table-column>
+		</el-table>
+	</el-main>
 </template>
 <script>
 	import moment from "moment";
-	import {deleteImage} from '../../utils/utils';
+	import { deleteImage } from "../../utils/utils";
 	export default {
 		name: "HeroList",
 		data() {
@@ -110,7 +108,8 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				}).then(async () => {
+				})
+					.then(async () => {
 						const res = await this.$http.delete(`rest/heroes/${rowData.id}`);
 						const { code, message } = res.data;
 						if (code === 200) {
@@ -122,7 +121,7 @@
 							deleteImage(rowData.avatar);
 							JSON.parse(rowData.skills).map((item) => {
 								deleteImage(item.skillImage);
-							})
+							});
 							this.getHeroesList();
 						} else {
 							this.$message({
@@ -130,7 +129,8 @@
 								message
 							});
 						}
-					}).catch(() => {
+					})
+					.catch(() => {
 						this.$message({
 							type: "info",
 							message: "已取消删除"

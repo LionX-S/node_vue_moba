@@ -1,8 +1,9 @@
 <template lang="">
 	<el-main>
-		<h1>分类列表</h1>
+		<h1>文章列表</h1>
 		<el-table
-			:data="goodsList"
+			:data="articlesList"
+			:default-sort="{ prop: 'create_time', order: 'descending' }"
 			border>
 			<el-table-column
 				type="index"
@@ -11,24 +12,19 @@
 				align="center">
 			</el-table-column>
 			<el-table-column
-				prop="name"
-				label="物品名称"
+				prop="title"
+				label="文章标题"
 				align="center">
 			</el-table-column>
 			<el-table-column
-				prop="imageUrl"
-				label="物品展示"
+				prop="category"
+				label="所属分类"
 				align="center">
-				<template slot-scope="scope">
-					<el-image
-						style="width: 50px; height: 50px"
-						:src="scope.row.imageUrl"></el-image>
-				</template>
 			</el-table-column>
 			<el-table-column
 				prop="create_time"
 				label="创建时间"
-				width="200"
+				width="400"
 				:formatter="dateFormate"
 				align="center">
 			</el-table-column>
@@ -41,13 +37,13 @@
 					<el-button
 						type="primary"
 						size="mini"
-						@click="$router.push(`/goods/create/${scope.row.id}`)"
+						@click="$router.push(`/articles/create/${scope.row.id}`)"
 						>编辑</el-button
 					>
 					<el-button
 						type="danger"
 						size="mini"
-						@click="deleteGoods(scope.row.id, scope.row.imageUrl)"
+						@click="deleteArticle(scope.row.id, scope.row.comment)"
 						>删除</el-button
 					>
 				</template>
@@ -57,24 +53,24 @@
 </template>
 <script>
 	import moment from "moment";
-	import { deleteImage } from "../../utils/utils";
+	import { deleteImage,drawImgUrl } from "../../utils/utils";
 	export default {
-		name: "CategoryList",
+		name: "ArticleList",
 		inject: ["reload"],
 		data() {
 			return {
-				goodsList: []
+				articlesList: []
 			};
 		},
 		methods: {
 			dateFormate(row, column, cellValue, index) {
 				return moment(cellValue).format("YYYY-MM-DD HH:mm:ss");
 			},
-			async getGoodsList() {
-				const res = await this.$http.get("rest/goods");
+			async getArticleList() {
+				const res = await this.$http.get("rest/articles");
 				const { code, body, message } = res.data;
 				if (code === 200) {
-					this.goodsList = body;
+					this.articlesList = body;
 				} else {
 					this.$message({
 						type: "error",
@@ -83,21 +79,24 @@
 				}
 			},
 
-			deleteGoods(goodsId, imageUrl) {
-				this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+			deleteArticle(articleId, articleComment) {
+				drawImgUrl(articleComment);
+				this.$confirm("此操作将永久删除该数据,是否继续?", "提示", {
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
 				})
 					.then(async () => {
-						const res = await this.$http.delete(`rest/goods/${goodsId}`);
+						const res = await this.$http.delete(`rest/articles/${articleId}`);
 						const { code, message } = res.data;
 						if (code === 200) {
+							drawImgUrl(articleComment).forEach((item) => {
+								deleteImage(item);
+							});
 							this.$message({
 								type: "success",
 								message
 							});
-							deleteImage(imageUrl);
 							this.reload();
 						} else {
 							this.$message({
@@ -106,7 +105,8 @@
 							});
 						}
 					})
-					.catch(() => {
+					.catch((err) => {
+						console.log(err);
 						this.$message({
 							type: "info",
 							message: "已取消删除"
@@ -115,7 +115,7 @@
 			}
 		},
 		created() {
-			this.getGoodsList();
+			this.getArticleList();
 		}
 	};
 </script>
