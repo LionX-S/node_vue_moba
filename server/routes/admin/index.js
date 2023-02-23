@@ -190,7 +190,7 @@ module.exports = (app) => {
 		const fs = require("fs");
 		fs.unlink(__dirname + `/../../uploads/${req.params.imageID}`, (err) => {
 			if (err) {
-				console.log(err);
+				res.send(err);
 				return false;
 			}
 		});

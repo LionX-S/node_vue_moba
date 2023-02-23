@@ -10,15 +10,16 @@ nanoidModel().then((res) => {
 });
 module.exports = {
 	createInsertSQL(req) {
+		console.log(req.body)
 		let values = "";
 		let bodyArr = Object.entries(req.body);
 		let keyArr = bodyArr.map((item, index) => {
 			return item[0];
 		});
 		let valuesArr = bodyArr.map((item) => {
-			if (item[0] === "password") {
-				return bcryptjs.hashSync(item[1], 10);
-			}
+			// if (item[0] === "password") {
+			// 	return bcryptjs.hashSync(item[1], 10);
+			// }
 			return item[1];
 		});
 		valuesArr.forEach((i) => {
@@ -41,9 +42,9 @@ module.exports = {
 			return item[0];
 		});
 		let valuesArr = bodyArr.map((item) => {
-			if (item[0] === "password") {
-				return bcryptjs.hashSync(item[1], 10);
-			}
+			// if (item[0] === "password") {
+			// 	return bcryptjs.hashSync(item[1], 10);
+			// }
 			return item[1];
 		});
 		valuesArr.forEach((i, index) => {

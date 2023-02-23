@@ -37,7 +37,7 @@
 						<el-menu-item index="/categories/list">分类列表</el-menu-item>
 					</el-menu-item-group>
 					<el-menu-item-group title="用户管理">
-						<el-menu-item index="/user/create">新建用户</el-menu-item>
+						<el-menu-item index="/user/create">新建用户(管理员)</el-menu-item>
 						<el-menu-item index="/user/list">用户列表</el-menu-item>
 					</el-menu-item-group>
 				</el-submenu>

@@ -21,6 +21,10 @@ import ArticleList from '../components/Articles/ArticleList.vue';
 import AdvertiseCreate from '../components/Advertise/AdvertiseCreate.vue';
 import AdvertiseList from '../components/Advertise/AdvertiseList.vue';
 
+// 用户
+import UsersCreate from '../components/User/UsersCreate.vue';
+import UsersList from '../components/User/UsersList.vue';
+
 export default new VueRouter({
 	routes: [
 		{
@@ -97,6 +101,20 @@ export default new VueRouter({
 				{
 					path: "/advertise/list",
 					component: AdvertiseList
+				},
+				// 用户功能路由
+				{
+					path: "/user/create",
+					component: UsersCreate
+				},
+				{
+					path: "/user/create/:id",
+					component: UsersCreate,
+					props:true
+				},
+				{
+					path: "/user/list",
+					component: UsersList
 				}
 			]
 		}
