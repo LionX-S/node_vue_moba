@@ -1,6 +1,6 @@
 <template lang="">
 	<el-main>
-		<h1>分类列表</h1>
+		<h1>英雄列表</h1>
 		<el-table
 			:data="heroesList"
 			border>

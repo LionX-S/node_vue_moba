@@ -1,8 +1,8 @@
 <template lang="">
 	<el-main>
-		<h1>文章列表</h1>
+		<h1>广告列表</h1>
 		<el-table
-			:data="articlesList"
+			:data="advertiseList"
 			:default-sort="{ prop: 'create_time', order: 'descending' }"
 			border>
 			<el-table-column
@@ -12,19 +12,29 @@
 				align="center">
 			</el-table-column>
 			<el-table-column
-				prop="title"
-				label="文章标题"
+				prop="category"
+				label="广告类型"
 				align="center">
 			</el-table-column>
 			<el-table-column
-				prop="category"
-				label="所属分类"
+				prop="linkUrl"
+				label="广告链接"
 				align="center">
+			</el-table-column>
+			<el-table-column
+				prop="imageUrl"
+				label="广告图片"
+				align="center">
+				<template slot-scope="scope">
+					<el-image
+						style="width: 50px; height: 50px"
+						:src="scope.row.imageUrl"></el-image>
+				</template>
 			</el-table-column>
 			<el-table-column
 				prop="create_time"
 				label="创建时间"
-				width="400"
+				width="180"
 				:formatter="dateFormate"
 				align="center">
 			</el-table-column>
@@ -37,13 +47,13 @@
 					<el-button
 						type="primary"
 						size="mini"
-						@click="$router.push(`/articles/create/${scope.row.id}`)"
+						@click="$router.push(`/advertise/create/${scope.row.id}`)"
 						>编辑</el-button
 					>
 					<el-button
 						type="danger"
 						size="mini"
-						@click="deleteArticle(scope.row.id, scope.row.comment)"
+						@click="deleteAdvertise(scope.row.id, scope.row.imageUrl)"
 						>删除</el-button
 					>
 				</template>
@@ -52,25 +62,25 @@
 	</el-main>
 </template>
 <script>
+	import { deleteImage } from "@/utils/utils";
 	import moment from "moment";
-	import { deleteImage,drawImgUrl } from "../../utils/utils";
 	export default {
-		name: "ArticleList",
+		name: "CategoryList",
 		inject: ["reload"],
 		data() {
 			return {
-				articlesList: []
+				advertiseList: []
 			};
 		},
 		methods: {
 			dateFormate(row, column, cellValue, index) {
 				return moment(cellValue).format("YYYY-MM-DD HH:mm:ss");
 			},
-			async getArticleList() {
-				const res = await this.$http.get("rest/articles");
+			async getAdvertiseList() {
+				const res = await this.$http.get("rest/advertise");
 				const { code, body, message } = res.data;
 				if (code === 200) {
-					this.articlesList = body;
+					this.advertiseList = body;
 				} else {
 					this.$message({
 						type: "error",
@@ -79,21 +89,19 @@
 				}
 			},
 
-			deleteArticle(articleId, articleComment) {
-				drawImgUrl(articleComment);
+			deleteAdvertise(advertiseId, imageUrl) {
 				this.$confirm("此操作将永久删除该数据,是否继续?", "提示", {
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
 				})
 					.then(async () => {
-						const res = await this.$http.delete(`rest/articles/${articleId}`);
+						const res = await this.$http.delete(
+							`rest/advertise/${advertiseId}`
+						);
 						const { code, message } = res.data;
 						if (code === 200) {
-							// 删除文章中的图片
-							drawImgUrl(articleComment).forEach(async (item) => {
-								await deleteImage(item);
-							});
+							await deleteImage(imageUrl);
 							this.$message({
 								type: "success",
 								message
@@ -116,7 +124,7 @@
 			}
 		},
 		created() {
-			this.getArticleList();
+			this.getAdvertiseList();
 		}
 	};
 </script>

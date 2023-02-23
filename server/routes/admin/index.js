@@ -42,7 +42,7 @@ module.exports = (app) => {
 		let selectSQL = "";
 		if (req.params.resource === "categories") {
 			selectSQL = `SELECT a.id,a.name,a.create_time,b.name as parentsName from categories a left JOIN categories b ON a.higherLevelID = b.id;`;
-		} else if (req.params.resource === "heroes" || req.params.resource === 'articles') {
+		} else if (req.params.resource === "heroes" || req.params.resource === 'articles' || req.params.resource === 'advertise') {
 			selectSQL =
 				`select a.*,b.name as category from ${req.params.resource} a left join categories b on a.category = b.id`;
 		} else {

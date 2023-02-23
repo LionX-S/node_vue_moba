@@ -3,16 +3,13 @@
 		<el-aside
 			width="200px"
 			style="background-color: rgb(238, 241, 246)">
-			<el-menu router :default-openeds="['1']">
+			<el-menu
+				router
+				:default-active="$route.path">
 				<el-submenu index="1">
 					<template slot="title"
 						><i class="el-icon-s-order"></i>内容管理</template
 					>
-					<el-menu-item-group>
-						<template slot="title">分类管理</template>
-						<el-menu-item index="/categories/create">新建分类</el-menu-item>
-						<el-menu-item index="/categories/list">分类列表</el-menu-item>
-					</el-menu-item-group>
 					<el-menu-item-group title="物品管理">
 						<el-menu-item index="/goods/create">新建物品</el-menu-item>
 						<el-menu-item index="/goods/list">物品列表</el-menu-item>
@@ -24,6 +21,24 @@
 					<el-menu-item-group title="文章管理">
 						<el-menu-item index="/articles/create">新建文章</el-menu-item>
 						<el-menu-item index="/articles/list">文章列表</el-menu-item>
+					</el-menu-item-group>
+					<el-menu-item-group title="广告管理">
+						<el-menu-item index="/advertise/create">新建广告</el-menu-item>
+						<el-menu-item index="/advertise/list">广告列表</el-menu-item>
+					</el-menu-item-group>
+				</el-submenu>
+				<el-submenu index="2">
+					<template slot="title"
+						><i class="el-icon-s-tools"></i>系统管理</template
+					>
+					<el-menu-item-group>
+						<template slot="title">分类管理</template>
+						<el-menu-item index="/categories/create">新建分类</el-menu-item>
+						<el-menu-item index="/categories/list">分类列表</el-menu-item>
+					</el-menu-item-group>
+					<el-menu-item-group title="用户管理">
+						<el-menu-item index="/user/create">新建用户</el-menu-item>
+						<el-menu-item index="/user/list">用户列表</el-menu-item>
 					</el-menu-item-group>
 				</el-submenu>
 			</el-menu>

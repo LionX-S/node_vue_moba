@@ -17,6 +17,10 @@ import HeroList from '../components/Hero/HeroList.vue';
 import ArticleCreate from '../components/Articles/ArticleCreate.vue';
 import ArticleList from '../components/Articles/ArticleList.vue';
 
+// 广告功能
+import AdvertiseCreate from '../components/Advertise/AdvertiseCreate.vue';
+import AdvertiseList from '../components/Advertise/AdvertiseList.vue';
+
 export default new VueRouter({
 	routes: [
 		{
@@ -79,6 +83,20 @@ export default new VueRouter({
 				{
 					path: "/articles/list",
 					component: ArticleList
+				},
+				// 广告功能路由
+				{
+					path: "/advertise/create",
+					component: AdvertiseCreate
+				},
+				{
+					path: "/advertise/create/:id",
+					component: AdvertiseCreate,
+					props:true
+				},
+				{
+					path: "/advertise/list",
+					component: AdvertiseList
 				}
 			]
 		}
