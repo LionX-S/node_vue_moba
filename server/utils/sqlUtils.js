@@ -1,5 +1,6 @@
 // 根据不同功能生成不同sql语句的功能util
 // 新版nanoid不支持commonJS
+const bcryptjs = require("bcrypt");
 let nanoid;
 const nanoidModel = async () => {
 	const model = await import("nanoid");
@@ -10,16 +11,15 @@ nanoidModel().then((res) => {
 });
 module.exports = {
 	createInsertSQL(req) {
-		console.log(req.body)
 		let values = "";
 		let bodyArr = Object.entries(req.body);
 		let keyArr = bodyArr.map((item, index) => {
 			return item[0];
 		});
 		let valuesArr = bodyArr.map((item) => {
-			// if (item[0] === "password") {
-			// 	return bcryptjs.hashSync(item[1], 10);
-			// }
+			if (item[0] === "password") {
+				return bcryptjs.hashSync(item[1], 10);
+			}
 			return item[1];
 		});
 		valuesArr.forEach((i) => {
@@ -42,9 +42,9 @@ module.exports = {
 			return item[0];
 		});
 		let valuesArr = bodyArr.map((item) => {
-			// if (item[0] === "password") {
-			// 	return bcryptjs.hashSync(item[1], 10);
-			// }
+			if (item[0] === "password") {
+				return bcryptjs.hashSync(item[1], 10);
+			}
 			return item[1];
 		});
 		valuesArr.forEach((i, index) => {

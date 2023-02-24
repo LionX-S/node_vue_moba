@@ -93,14 +93,7 @@
 			async getHeroesList() {
 				const res = await this.$http.get("rest/heroes");
 				const { code, body, message } = res.data;
-				if (code === 200) {
-					this.heroesList = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				this.heroesList = body;
 			},
 
 			deleteHeroes(rowData) {
@@ -108,34 +101,20 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				})
-					.then(async () => {
-						const res = await this.$http.delete(`rest/heroes/${rowData.id}`);
-						const { code, message } = res.data;
-						if (code === 200) {
-							this.$message({
-								type: "success",
-								message
-							});
-							// 删除已经上传的图片
-							deleteImage(rowData.avatar);
-							JSON.parse(rowData.skills).map((item) => {
-								deleteImage(item.skillImage);
-							});
-							this.getHeroesList();
-						} else {
-							this.$message({
-								type: "error",
-								message
-							});
-						}
-					})
-					.catch(() => {
-						this.$message({
-							type: "info",
-							message: "已取消删除"
-						});
+				}).then(async () => {
+					const res = await this.$http.delete(`rest/heroes/${rowData.id}`);
+					const { message } = res.data;
+					this.$message({
+						type: "success",
+						message
 					});
+					// 删除已经上传的图片
+					deleteImage(rowData.avatar);
+					JSON.parse(rowData.skills).map((item) => {
+						deleteImage(item.skillImage);
+					});
+					this.getHeroesList();
+				});
 			}
 		},
 		created() {

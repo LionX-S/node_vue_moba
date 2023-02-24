@@ -86,18 +86,11 @@
 						category: this.article.category
 					});
 				}
-				if (res.data.code === 200) {
-					this.$router.push("/articles/list");
-					this.$message({
-						type: "success",
-						message: res.data.message
-					});
-				} else {
-					this.$message({
-						type: "error",
-						message: res.data.message
-					});
-				}
+				this.$router.push("/articles/list");
+				this.$message({
+					type: "success",
+					message: res.data.message
+				});
 			},
 			// 取消功能
 			async cancel() {
@@ -110,27 +103,13 @@
 			async getArticleById(id) {
 				const res = await this.$http.get(`rest/articles/${id}`);
 				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.article = { ...this.article, ...body[0] };
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				this.article = { ...this.article, ...body[0] };
 			},
 			// 获取文章分类列表
 			async getArticleCategory(categoryName) {
 				const res = await this.$http.get(`getChildCategory/${categoryName}`);
 				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.articleCategory = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				this.articleCategory = body;
 			},
 
 			// 文本编辑起自定义上传图片事件

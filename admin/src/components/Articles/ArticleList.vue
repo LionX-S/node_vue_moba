@@ -53,7 +53,7 @@
 </template>
 <script>
 	import moment from "moment";
-	import { deleteImage,drawImgUrl } from "../../utils/utils";
+	import { deleteImage, drawImgUrl } from "../../utils/utils";
 	export default {
 		name: "ArticleList",
 		inject: ["reload"],
@@ -68,15 +68,8 @@
 			},
 			async getArticleList() {
 				const res = await this.$http.get("rest/articles");
-				const { code, body, message } = res.data;
-				if (code === 200) {
-					this.articlesList = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.articlesList = body;
 			},
 
 			deleteArticle(articleId, articleComment) {
@@ -85,34 +78,19 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				})
-					.then(async () => {
-						const res = await this.$http.delete(`rest/articles/${articleId}`);
-						const { code, message } = res.data;
-						if (code === 200) {
-							// 删除文章中的图片
-							drawImgUrl(articleComment).forEach(async (item) => {
-								await deleteImage(item);
-							});
-							this.$message({
-								type: "success",
-								message
-							});
-							this.reload();
-						} else {
-							this.$message({
-								type: "error",
-								message
-							});
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-						this.$message({
-							type: "info",
-							message: "已取消删除"
-						});
+				}).then(async () => {
+					const res = await this.$http.delete(`rest/articles/${articleId}`);
+					const { code, message } = res.data;
+					// 删除文章中的图片
+					drawImgUrl(articleComment).forEach(async (item) => {
+						await deleteImage(item);
 					});
+					this.$message({
+						type: "success",
+						message
+					});
+					this.reload();
+				});
 			}
 		},
 		created() {

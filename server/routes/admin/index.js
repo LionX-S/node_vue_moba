@@ -23,14 +23,11 @@ module.exports = (app) => {
 	router.post("/", async (req, res) => {
 		await mysql().query(createInsertSQL(req), (err, result) => {
 			if (err) {
-				res.send({
-					code: 400,
-					message: "新增失败！",
-					err
+				res.status(500).send({
+					message: "新增失败！"
 				});
 			} else {
-				res.send({
-					code: 200,
+				res.status(200).send({
 					message: "新增成功！"
 				});
 			}
@@ -42,23 +39,23 @@ module.exports = (app) => {
 		let selectSQL = "";
 		if (req.params.resource === "categories") {
 			selectSQL = `SELECT a.id,a.name,a.create_time,b.name as parentsName from categories a left JOIN categories b ON a.higherLevelID = b.id;`;
-		} else if (req.params.resource === "heroes" || req.params.resource === 'articles' || req.params.resource === 'advertise') {
-			selectSQL =
-				`select a.*,b.name as category from ${req.params.resource} a left join categories b on a.category = b.id`;
+		} else if (
+			req.params.resource === "heroes" ||
+			req.params.resource === "articles" ||
+			req.params.resource === "advertise"
+		) {
+			selectSQL = `select a.*,b.name as category from ${req.params.resource} a left join categories b on a.category = b.id`;
 		} else {
 			selectSQL = `SELECT * FROM ${req.params.resource} LIMIT 10`;
 		}
 		await mysql().query(selectSQL, (err, result) => {
 			if (err) {
-				res.send({
-					code: 400,
-					message: "查询失败",
-					err
+				res.status(500).send({
+					message: "查询失败!"
 				});
 			} else {
-				res.send({
-					code: 200,
-					message: "查询成功！",
+				res.status(200).send({
+					message: "查询成功",
 					body: result
 				});
 			}
@@ -67,39 +64,33 @@ module.exports = (app) => {
 
 	// 根据id查询并修改标数据
 	router.get("/:id", async (req, res) => {
-		await mysql().query(
-			`select * from ${req.params.resource} where id = '${req.params.id}'`,
-			(err, result) => {
-				if (err) {
-					res.send({
-						code: 400,
-						message: "获取数据失败",
-						err
-					});
-				} else {
-					res.send({
-						code: 200,
-						message: "查询成功！",
-						body: result
-					});
-				}
+		let sql = `select * from ${req.params.resource} where id = '${req.params.id}'`;
+		if (req.params.resource === "users") {
+			sql = `select id,userName,avatarUrl,create_time from ${req.params.resource} where id='${req.params.id}'`;
+		}
+		await mysql().query(sql, (err, result) => {
+			if (err) {
+				res.send.status(500).send({
+					message: "获取数据失败"
+				});
+			} else {
+				res.status(200).send({
+					body: result
+				});
 			}
-		);
+		});
 	});
 
 	router.put("/:id", async (req, res) => {
 		const { createUpdateSQL } = require("../../utils/sqlUtils");
 		await mysql().query(createUpdateSQL(req), (err, result) => {
 			if (err) {
-				res.send({
-					code: 400,
-					message: "获取数据失败",
-					err
+				res.send.status(500).send({
+					message: "获取数据失败"
 				});
 			} else {
-				res.send({
-					code: 200,
-					message: "查询成功！",
+				res.status(200).send({
+					message: "查询成功!",
 					body: result
 				});
 			}
@@ -112,14 +103,11 @@ module.exports = (app) => {
 			`delete from ${req.params.resource} where id = '${req.params.id}'`,
 			(err, result) => {
 				if (err) {
-					res.send({
-						code: 400,
-						message: "删除数据失败",
-						err
+					res.send.status(500).send({
+						message: "删除数据失败"
 					});
 				} else {
-					res.send({
-						code: 200,
+					res.status(200).send({
 						message: "删除数据成功"
 					});
 				}
@@ -145,14 +133,11 @@ module.exports = (app) => {
 			'select * from categories where higherLevelID="firstLevel"',
 			(err, result) => {
 				if (err) {
-					res.send({
-						code: 400,
-						message: "获取一级分类数据失败",
-						err
+					res.send.status(500).send({
+						message: "获取分类数据失败"
 					});
 				} else {
-					res.send({
-						code: 200,
+					res.status(200).send({
 						body: {
 							label: "一级分类",
 							options: setFirstLevelArray(result)
@@ -163,21 +148,17 @@ module.exports = (app) => {
 		);
 	});
 
-	// 根据一级分类名称子分类
+	// 根据一级分类名称获取子分类
 	app.get("/admin/api/getChildCategory/:firstCategory", async (req, res) => {
 		await mysql().query(
 			`select * from categories where higherLevelID = (SELECT id FROM categories where name = '${req.params.firstCategory}')`,
 			(err, result) => {
 				if (err) {
-					res.send({
-						code: 400,
-						message: "获取数据失败",
-						err
+					res.send.status(500).send({
+						message: "获取分类数据失败"
 					});
 				} else {
-					res.send({
-						code: 200,
-						message: "查询成功！",
+					res.status(200).send({
 						body: result
 					});
 				}
@@ -186,7 +167,7 @@ module.exports = (app) => {
 	});
 
 	// 删除上传的图片
-	app.delete("/admin/api/deleteImage/uploads/:imageID",(req, res) => {
+	app.delete("/admin/api/deleteImage/uploads/:imageID", (req, res) => {
 		const fs = require("fs");
 		fs.unlink(__dirname + `/../../uploads/${req.params.imageID}`, (err) => {
 			if (err) {
@@ -203,5 +184,22 @@ module.exports = (app) => {
 	app.post("/admin/api/upload", upload.single("file"), async (req, res) => {
 		req.file.url = `http://localhost:3000/uploads/${req.file.filename}`;
 		res.send(req.file);
+	});
+
+	// 登录接口
+	app.post("/admin/api/login", async (req, res) => {
+		const { username, password } = req.body;
+		await mysql().query(
+			`select * from users where username='${username}'`,
+			(err, result) => {
+				if (!result.length) {
+					res.status(422).send({
+						message: "用户不存在！"
+					});
+				}else{
+					res.status(200).send({})
+				}
+			}
+		);
 	});
 };

@@ -166,18 +166,11 @@
 						skills: JSON.stringify(this.heroes.skills)
 					});
 				}
-				if (res.data.code === 200) {
-					this.$router.push("/heroes/list");
-					this.$message({
-						type: "success",
-						message: res.data.message
-					});
-				} else {
-					this.$message({
-						type: "error",
-						message: res.data.message
-					});
-				}
+				this.$router.push("/heroes/list");
+				this.$message({
+					type: "success",
+					message: res.data.message
+				});
 			},
 			// 取消功能
 			async cancel() {
@@ -196,31 +189,17 @@
 			async getHeroesById(id) {
 				const res = await this.$http.get(`rest/heroes/${id}`);
 				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.heroes = {
-						...this.heroes,
-						...body[0],
-						skills: JSON.parse(body[0].skills)
-					};
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				this.heroes = {
+					...this.heroes,
+					...body[0],
+					skills: JSON.parse(body[0].skills)
+				};
 			},
 			// 查询英雄大分类下所有分类
 			async getCategoryByHero(categoryName) {
 				const res = await this.$http.get(`getChildCategory/${categoryName}`);
 				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.heroCategoryOpt = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				this.heroCategoryOpt = body;
 			},
 
 			handleImageSuccess(res) {

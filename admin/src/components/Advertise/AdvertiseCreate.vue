@@ -86,20 +86,13 @@
 						this.advertise
 					);
 				} else {
-					res = await this.$http.post("rest/advertise",this.advertise);
+					res = await this.$http.post("rest/advertise", this.advertise);
 				}
-				if (res.data.code === 200) {
-					this.$router.push("/advertise/list");
-					this.$message({
-						type: "success",
-						message: res.data.message
-					});
-				} else {
-					this.$message({
-						type: "error",
-						message: res.data.message
-					});
-				}
+				this.$router.push("/advertise/list");
+				this.$message({
+					type: "success",
+					message: res.data.message
+				});
 			},
 			// 取消功能
 			async cancel() {
@@ -111,28 +104,14 @@
 			// 编辑分类功能
 			async getAdvertiseById(id) {
 				const res = await this.$http.get(`rest/advertise/${id}`);
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.advertise = {...this.advertise, ...body[0]};
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.advertise = { ...this.advertise, ...body[0] };
 			},
-			// 查询英雄大分类下所有分类
+			// 查询广告大分类下所有分类
 			async getCategoryByAdv(advName) {
 				const res = await this.$http.get(`getChildCategory/${advName}`);
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.advertiseCategoryOpt = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.advertiseCategoryOpt = body;
 			},
 
 			handleImageSuccess(res) {

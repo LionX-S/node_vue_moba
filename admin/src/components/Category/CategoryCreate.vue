@@ -89,18 +89,11 @@
 						higherLevelID: this.categoryLevelValue
 					});
 				}
-				if (res.data.code === 200) {
-					this.$router.push("/categories/list");
-					this.$message({
-						type: "success",
-						message: res.data.message
-					});
-				} else {
-					this.$message({
-						type: "error",
-						message: res.data.message
-					});
-				}
+				this.$router.push("/categories/list");
+				this.$message({
+					type: "success",
+					message: res.data.message
+				});
 			},
 			// 取消功能
 			async cancel() {
@@ -109,29 +102,15 @@
 			// 编辑分类功能
 			async getCategoryById(id) {
 				const res = await this.$http.get(`rest/categories/${this.id}`);
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.category.name = body[0].name;
-					this.categoryLevelValue = body[0].higherLevelID;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.category.name = body[0].name;
+				this.categoryLevelValue = body[0].higherLevelID;
 			},
 			// 获取一级分类列表
 			async getFirstCategory() {
 				const res = await this.$http.get("getFirstCategory");
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.categoryLevel.push(body);
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.categoryLevel.push(body);
 			}
 		},
 		created() {

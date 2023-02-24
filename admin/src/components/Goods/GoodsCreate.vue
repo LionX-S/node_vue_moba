@@ -76,18 +76,11 @@
 						imageUrl: this.goods.imageUrl
 					});
 				}
-				if (res.data.code === 200) {
-					this.$router.push("/goods/list");
-					this.$message({
-						type: "success",
-						message: res.data.message
-					});
-				} else {
-					this.$message({
-						type: "error",
-						message: res.data.message
-					});
-				}
+				this.$router.push("/goods/list");
+				this.$message({
+					type: "success",
+					message: res.data.message
+				});
 			},
 			// 取消功能
 			async cancel() {
@@ -100,15 +93,8 @@
 			// 编辑分类功能
 			async getGoodsById(id) {
 				const res = await this.$http.get(`rest/goods/${this.id}`);
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.goods = { ...this.goods, ...body[0] };
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.goods = { ...this.goods, ...body[0] };
 			},
 			handleImageSuccess(res) {
 				this.goods.imageUrl = res.url;

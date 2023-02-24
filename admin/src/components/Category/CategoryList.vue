@@ -67,15 +67,8 @@
 			},
 			async getCategoryList() {
 				const res = await this.$http.get("rest/categories");
-				const { code, body, message } = res.data;
-				if (code === 200) {
-					this.categoriesList = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body, message } = res.data;
+				this.categoriesList = body;
 			},
 
 			deleteCategory(categoryId) {
@@ -83,31 +76,15 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				})
-					.then(async () => {
-						const res = await this.$http.delete(
-							`rest/categories/${categoryId}`
-						);
-						const { code, message } = res.data;
-						if (code === 200) {
-							this.$message({
-								type: "success",
-								message
-							});
-							this.reload();
-						} else {
-							this.$message({
-								type: "error",
-								message
-							});
-						}
-					})
-					.catch(() => {
-						this.$message({
-							type: "info",
-							message: "已取消删除"
-						});
+				}).then(async () => {
+					const res = await this.$http.delete(`rest/categories/${categoryId}`);
+					const { message } = res.data;
+					this.$message({
+						type: "success",
+						message
 					});
+					this.reload();
+				});
 			}
 		},
 		created() {

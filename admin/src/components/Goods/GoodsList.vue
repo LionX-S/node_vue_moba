@@ -72,15 +72,8 @@
 			},
 			async getGoodsList() {
 				const res = await this.$http.get("rest/goods");
-				const { code, body, message } = res.data;
-				if (code === 200) {
-					this.goodsList = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.goodsList = body;
 			},
 
 			deleteGoods(goodsId, imageUrl) {
@@ -88,30 +81,16 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				})
-					.then(async () => {
-						const res = await this.$http.delete(`rest/goods/${goodsId}`);
-						const { code, message } = res.data;
-						if (code === 200) {
-							this.$message({
-								type: "success",
-								message
-							});
-							deleteImage(imageUrl);
-							this.reload();
-						} else {
-							this.$message({
-								type: "error",
-								message
-							});
-						}
-					})
-					.catch(() => {
-						this.$message({
-							type: "info",
-							message: "已取消删除"
-						});
+				}).then(async () => {
+					const res = await this.$http.delete(`rest/goods/${goodsId}`);
+					const { code, message } = res.data;
+					this.$message({
+						type: "success",
+						message
 					});
+					deleteImage(imageUrl);
+					this.reload();
+				});
 			}
 		},
 		created() {

@@ -78,18 +78,11 @@
 				} else {
 					res = await this.$http.post("rest/users", this.user);
 				}
-				if (res.data.code === 200) {
-					this.$router.push("/user/list");
-					this.$message({
-						type: "success",
-						message: res.data.message
-					});
-				} else {
-					this.$message({
-						type: "error",
-						message: res.data.message
-					});
-				}
+				this.$router.push("/user/list");
+				this.$message({
+					type: "success",
+					message: res.data.message
+				});
 			},
 			// 取消功能
 			async cancel() {
@@ -101,16 +94,9 @@
 			},
 			// 编辑分类功能
 			async getGoodsById(id) {
-				const res = await this.$http.get(`rest/users/${this.id}`);
-				const { body, message, code } = res.data;
-				if (code === 200) {
-					this.user = { ...this.user, ...body[0] };
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const res = await this.$http.get(`rest/users/${id}`);
+				const { body } = res.data;
+				this.user = { ...this.user, ...body[0] };
 			},
 			handleImageSuccess(res) {
 				this.user.avatarUrl = res.url;

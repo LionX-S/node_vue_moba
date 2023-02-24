@@ -41,7 +41,7 @@
 					<el-button
 						type="primary"
 						size="mini"
-						@click="$router.push(`/goods/create/${scope.row.id}`)"
+						@click="$router.push(`/user/create/${scope.row.id}`)"
 						>编辑</el-button
 					>
 					<el-button
@@ -72,15 +72,8 @@
 			},
 			async getUsersList() {
 				const res = await this.$http.get("rest/users");
-				const { code, body, message } = res.data;
-				if (code === 200) {
-					this.usersList = body;
-				} else {
-					this.$message({
-						type: "error",
-						message
-					});
-				}
+				const { body } = res.data;
+				this.usersList = body;
 			},
 
 			deleteGoods(userId, avatarUrl) {
@@ -88,31 +81,16 @@
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
 					type: "warning"
-				})
-					.then(async () => {
-						const res = await this.$http.delete(`rest/users/${userId}`);
-						const { code, message } = res.data;
-						if (code === 200) {
-							this.$message({
-								type: "success",
-								message
-							});
-							deleteImage(avatarUrl);
-							this.reload();
-						} else {
-							this.$message({
-								type: "error",
-								message
-							});
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-						this.$message({
-							type: "info",
-							message: "已取消删除"
-						});
+				}).then(async () => {
+					const res = await this.$http.delete(`rest/users/${userId}`);
+					const { code, message } = res.data;
+					this.$message({
+						type: "success",
+						message
 					});
+					deleteImage(avatarUrl);
+					this.reload();
+				});
 			}
 		},
 		created() {
