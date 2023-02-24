@@ -7,20 +7,22 @@
 		</div>
 		<el-form @submit.native.prevent="login">
 			<el-form-item label="账号">
-				<el-input placeholder="用户名" v-model="user.username"></el-input>
+				<el-input
+					placeholder="用户名"
+					v-model="user.username"></el-input>
 			</el-form-item>
 			<el-form-item label="密码">
 				<el-input
 					placeholder="密码"
 					type="password"
-          v-model="user.password"
+					v-model="user.password"
 					show-password></el-input>
 			</el-form-item>
-      <el-button
-        type="primary"
-        native-type="submit"
-        >登录</el-button
-      >
+			<el-button
+				type="primary"
+				native-type="submit"
+				>登录</el-button
+			>
 		</el-form>
 	</el-card>
 </template>
@@ -35,12 +37,19 @@
 				}
 			};
 		},
-    methods: {
-      async login() {
-        const res = await this.$http.post('login', this.user);
-        
-      }
-    },
+		methods: {
+			async login() {
+				const res = await this.$http.post("login", this.user);
+				const { token, username, avatarUrl } = res.data;
+				this.$store.dispatch("setUserMsg", { username, avatarUrl });
+				localStorage.token = token;
+				this.$router.push("/");
+				this.$message({
+					type: "success",
+					message: `登录成功!欢迎，${username}`
+				});
+			}
+		}
 	};
 </script>
 <style>

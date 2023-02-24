@@ -46,22 +46,47 @@
 
 		<el-container>
 			<el-header style="text-align: right; font-size: 12px">
-				<el-dropdown>
-					<i
-						class="el-icon-setting"
-						style="margin-right: 15px"></i>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item>查看</el-dropdown-item>
-						<el-dropdown-item>新增</el-dropdown-item>
-						<el-dropdown-item>删除</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-				<span>管理员</span>
+				<div class="userMsg">
+					<el-avatar
+						size="medium"
+						:src="$store.state.avatarUrl"
+						@error="errorHandle">
+						user
+					</el-avatar>
+					<span style="margin-left: 10px">{{ $store.state.username }}</span>
+				</div>
 			</el-header>
 			<router-view v-if="isRouterAlive"></router-view>
 		</el-container>
 	</el-container>
 </template>
+
+<script>
+	export default {
+		// 实现router-view的刷新功能
+		provide() {
+			return {
+				reload: this.reload
+			};
+		},
+		data() {
+			return {
+				isRouterAlive: true
+			};
+		},
+		methods: {
+			reload() {
+				this.isRouterAlive = false;
+				this.$nextTick(() => {
+					this.isRouterAlive = true;
+				});
+			},
+			errorHandle() {
+				return true;
+			}
+		}
+	};
+</script>
 
 <style>
 	.el-header {
@@ -99,28 +124,12 @@
 	.skillsItem {
 		padding-left: 50px;
 	}
+	.userMsg {
+		height: 60px;
+		line-height: 60px;
+	}
+	.userMsg > span {
+		display: inline-block;
+		vertical-align: middle;
+	}
 </style>
-
-<script>
-	export default {
-		// 实现router-view的刷新功能
-		provide() {
-			return {
-				reload: this.reload
-			};
-		},
-		data() {
-			return {
-				isRouterAlive: true
-			};
-		},
-		methods: {
-			reload() {
-				this.isRouterAlive = false;
-				this.$nextTick(() => {
-					this.isRouterAlive = true;
-				});
-			}
-		}
-	};
-</script>

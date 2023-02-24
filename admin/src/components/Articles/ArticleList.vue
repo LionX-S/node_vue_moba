@@ -80,7 +80,7 @@
 					type: "warning"
 				}).then(async () => {
 					const res = await this.$http.delete(`rest/articles/${articleId}`);
-					const { code, message } = res.data;
+					const { message } = res.data;
 					// 删除文章中的图片
 					drawImgUrl(articleComment).forEach(async (item) => {
 						await deleteImage(item);

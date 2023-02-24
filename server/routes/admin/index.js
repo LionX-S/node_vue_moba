@@ -185,20 +185,39 @@ module.exports = (app) => {
 		req.file.url = `http://localhost:3000/uploads/${req.file.filename}`;
 		res.send(req.file);
 	});
-
+	app.set('secret','node_vue_moba');
 	// 登录接口
 	app.post("/admin/api/login", async (req, res) => {
 		const { username, password } = req.body;
 		await mysql().query(
 			`select * from users where username='${username}'`,
 			(err, result) => {
-				if (!result.length) {
-					res.status(422).send({
-						message: "用户不存在！"
+				const { id, username, avatarUrl } = result[0];
+				if (!id) {
+					return res.status(422).send({
+						message: "用户不存在!"
 					});
-				}else{
-					res.status(200).send({})
 				}
+
+				// 验证密码
+				const isValid = require("bcrypt").compareSync(
+					password,
+					result[0].password
+				);
+				if (!isValid) {
+					return res.status(422).send({
+						message: "密码错误"
+					});
+				}
+
+				// 返回token
+				const jwt = require("jsonwebtoken");
+				const token = jwt.sign({ id }, app.get('secret'));
+				res.send({
+					token,
+					username,
+					avatarUrl
+				})
 			}
 		);
 	});
