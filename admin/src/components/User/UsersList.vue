@@ -11,7 +11,7 @@
 				align="center">
 			</el-table-column>
 			<el-table-column
-				prop="userName"
+				prop="username"
 				label="用户名"
 				align="center">
 			</el-table-column>

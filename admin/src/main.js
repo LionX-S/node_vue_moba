@@ -5,7 +5,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import App from "./App.vue";
 import router from "./router";
 import http from "./http";
-import store from './store';
+import store from "./store";
 
 Vue.config.productionTip = false;
 
@@ -13,6 +13,19 @@ Vue.use(VueRouter);
 Vue.use(ElementUI);
 // axios
 Vue.prototype.$http = http;
+
+// 所有上传图片框加herders,才能提交成功
+Vue.mixin({
+	methods: {
+		getAuthHeaders() {
+			if (localStorage.token) {
+				return {
+					Authorization: `Bearer ${localStorage.token || ""}`
+				};
+			}
+		}
+	}
+});
 
 new Vue({
 	render: (h) => h(App),

@@ -1,5 +1,7 @@
 module.exports = (app) => {
 	const express = require("express");
+	const jwt = require("jsonwebtoken");
+	const assert = require("http-assert");
 	// 启用通用curd接口的api配置merge params，可以从url中req.params.resource获取到数据库table名称
 	// 当然 前端请求URL要满足格式
 	const router = express.Router({
@@ -17,7 +19,7 @@ module.exports = (app) => {
 	});
 
 	// 引入生成特殊sql方法
-	const { createInsertSQL } = require("../../utils/sqlUtils");
+	const { createInsertSQL, createUpdateSQL } = require("../../utils/sqlUtils");
 
 	// 新增表数据
 	router.post("/", async (req, res) => {
@@ -66,7 +68,7 @@ module.exports = (app) => {
 	router.get("/:id", async (req, res) => {
 		let sql = `select * from ${req.params.resource} where id = '${req.params.id}'`;
 		if (req.params.resource === "users") {
-			sql = `select id,userName,avatarUrl,create_time from ${req.params.resource} where id='${req.params.id}'`;
+			sql = `select id,username,avatarUrl,create_time from ${req.params.resource} where id='${req.params.id}'`;
 		}
 		await mysql().query(sql, (err, result) => {
 			if (err) {
@@ -82,7 +84,6 @@ module.exports = (app) => {
 	});
 
 	router.put("/:id", async (req, res) => {
-		const { createUpdateSQL } = require("../../utils/sqlUtils");
 		await mysql().query(createUpdateSQL(req), (err, result) => {
 			if (err) {
 				res.send.status(500).send({
@@ -115,7 +116,25 @@ module.exports = (app) => {
 		);
 	});
 
-	app.use("/admin/api/rest/:resource", router);
+	// auth鉴权中间件
+	const authMiddleware = async (req, res, next) => {
+		const token = String(req.headers.authorization || "")
+			.split(" ")
+			.pop();
+		assert(token, 401, "请先登录");
+		const { id } = jwt.verify(token, app.get("secret"));
+		assert(id, 401, "请先登录");
+		await mysql().query(
+			`select id from users where id='${id}'`,
+			(err, result) => {
+				const userID = result[0].id;
+				assert(userID, 401, "请先登录");
+			}
+		);
+		await next();
+	};
+
+	app.use("/admin/api/rest/:resource", authMiddleware, router);
 
 	// 包装一级类返回数据
 	function setFirstLevelArray(result) {
@@ -181,24 +200,25 @@ module.exports = (app) => {
 	const multer = require("multer");
 	// __dirname为当前文件的绝对路径，这里设置为上传到哪个文件夹
 	const upload = multer({ dest: __dirname + "/../../uploads" });
-	app.post("/admin/api/upload", upload.single("file"), async (req, res) => {
+	app.post("/admin/api/upload", authMiddleware, upload.single("file"), async (req, res) => {
 		req.file.url = `http://localhost:3000/uploads/${req.file.filename}`;
 		res.send(req.file);
 	});
-	app.set('secret','node_vue_moba');
+
+	// 创建token会用到
+	app.set("secret", "node_vue_moba");
 	// 登录接口
 	app.post("/admin/api/login", async (req, res) => {
 		const { username, password } = req.body;
 		await mysql().query(
 			`select * from users where username='${username}'`,
 			(err, result) => {
-				const { id, username, avatarUrl } = result[0];
-				if (!id) {
+				if (!result.length) {
 					return res.status(422).send({
 						message: "用户不存在!"
 					});
 				}
-
+				const {id, username, avatarUrl} = result[0];
 				// 验证密码
 				const isValid = require("bcrypt").compareSync(
 					password,
@@ -211,14 +231,20 @@ module.exports = (app) => {
 				}
 
 				// 返回token
-				const jwt = require("jsonwebtoken");
-				const token = jwt.sign({ id }, app.get('secret'));
+				const token = jwt.sign({ id }, app.get("secret"));
 				res.send({
 					token,
 					username,
 					avatarUrl
-				})
+				});
 			}
 		);
+	});
+
+	// 后台错误捕获（统一处理）
+	app.use(async (err, req, res, next) => {
+		res.status(err.statusCode || 500).send({
+			message: err.message
+		});
 	});
 };
