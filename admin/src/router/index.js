@@ -28,12 +28,15 @@ import UsersList from '../components/User/UsersList.vue';
 // 登录
 import Login from '../components/Login.vue';
 
-export default new VueRouter({
+const router = new VueRouter({
 	routes: [
 		{
 			path:'/login',
 			name:'login',
-			component: Login
+			component: Login,
+			meta:{
+				isPublic: true
+			}
 		},
 		{
 			path: "/",
@@ -128,3 +131,11 @@ export default new VueRouter({
 		}
 	]
 });
+
+router.beforeEach((to, from, next) => {
+	if(!to.meta.isPublic && !localStorage.token) {
+		return next("/login");
+	}
+	next();
+})
+export default router;
