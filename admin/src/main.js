@@ -23,6 +23,19 @@ Vue.mixin({
 					Authorization: `Bearer ${localStorage.token || ""}`
 				};
 			}
+		},
+		submitForm(formName,callback) {
+			this.$refs[formName].validate((valid) => {
+				if (valid) {
+					callback()
+					// return true;
+				} else {
+					return false;
+				}
+			});
+		},
+		resetForm(formName) {
+			this.$refs[formName].resetFields();
 		}
 	}
 });

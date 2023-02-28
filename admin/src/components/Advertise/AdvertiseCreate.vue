@@ -4,8 +4,12 @@
 		<el-form
 			label-width="120px"
 			label-position="left"
-			@submit.native.prevent="save">
-			<el-form-item label="广告类型">
+			:rules="rules"
+			:model="advertise"
+			ref="advertise">
+			<el-form-item
+				label="广告类型"
+				prop="category">
 				<el-select
 					v-model="advertise.category"
 					placeholder="请选择">
@@ -17,12 +21,16 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="广告链接">
+			<el-form-item
+				label="广告链接"
+				prop="linkUrl">
 				<el-input
 					v-model="advertise.linkUrl"
 					placeholder="请输入广告链接"></el-input>
 			</el-form-item>
-			<el-form-item label="广告图片">
+			<el-form-item
+				label="广告图片"
+				prop="imageUrl">
 				<el-upload
 					class="avatar-uploader"
 					:action="$http.defaults.baseURL + '/upload'"
@@ -42,8 +50,13 @@
 			<el-form-item>
 				<el-button
 					type="primary"
-					native-type="submit"
+					@click="submitForm('advertise', save)"
 					>保存</el-button
+				>
+				<el-button
+					@click="resetVal"
+					type="warning"
+					>重置</el-button
 				>
 				<el-button
 					type="danger"
@@ -55,6 +68,7 @@
 	</el-main>
 </template>
 <script>
+	import { deleteImage } from "../../utils/utils";
 	export default {
 		props: ["id"],
 		inject: ["reload"],
@@ -66,20 +80,27 @@
 					category: "",
 					imageUrl: ""
 				},
-				advertiseCategoryOpt: []
+				advertiseCategoryOpt: [],
+				// 输入检验规则
+				rules: {
+					category: [
+						{ required: true, message: "请选择广告类型", trigger: "change" }
+					],
+					linkUrl: [
+						{ required: true, message: "请输入广告链接", trigger: "blur" }
+					],
+					imageUrl: [{ required: true, message: "请上传图片", trigger: "blur" }]
+				}
 			};
 		},
 		methods: {
-			async save() {
-				// 填写数据校验
-				if (!this.advertise.linkUrl.trim()) {
-					this.$message({
-						type: "warning",
-						message: "请填写正确数据！"
-					});
-					return;
+			async resetVal() {
+				if (!this.id && this.advertise.imageUrl !== "") {
+					await deleteImage(this.advertise.imageUrl);
 				}
-				// 如果是新建则走新建api，如果是编辑走编辑api
+				this.resetForm("advertise");
+			},
+			async save() {
 				let res;
 				if (this.id) {
 					res = await this.$http.put(
