@@ -4,13 +4,19 @@
 		<el-form
 			label-width="120px"
 			label-position="left"
-			@submit.native.prevent="save">
-			<el-form-item label="物品名称">
+			ref="goods"
+			:rules="rules"
+			:model="goods">
+			<el-form-item
+				label="物品名称"
+				prop="name">
 				<el-input
 					v-model="goods.name"
 					placeholder="请输入物品名称"></el-input>
 			</el-form-item>
-			<el-form-item label="物品图片">
+			<el-form-item
+				label="物品图片"
+				prop="imageUrl">
 				<el-upload
 					class="avatar-uploader"
 					:action="$http.defaults.baseURL + '/upload'"
@@ -30,8 +36,14 @@
 			<el-form-item>
 				<el-button
 					type="primary"
-					native-type="submit"
+					@click="submitForm('goods', save)"
 					>保存</el-button
+				>
+				<el-button
+					v-if="!id"
+					@click="resetVal"
+					type="warning"
+					>重置</el-button
 				>
 				<el-button
 					type="danger"
@@ -54,19 +66,25 @@
 				goods: {
 					name: "",
 					imageUrl: ""
+				},
+				rules: {
+					name: [
+						{ required: true, message: "请填写物品名称", trigger: "blur" }
+					],
+					imageUrl: [
+						{ required: true, message: "请上传图片", trigger: "change" }
+					]
 				}
 			};
 		},
 		methods: {
-			async save() {
-				// 填写数据校验
-				if (!this.goods.name.trim()) {
-					this.$message({
-						type: "warning",
-						message: "请填写正确数据！"
-					});
-					return;
+			async resetVal() {
+				if (!this.id && this.goods.imageUrl !== "") {
+					await deleteImage(this.goods.imageUrl);
 				}
+				this.resetForm("goods");
+			},
+			async save() {
 				// 如果是新建则走新建api，如果是编辑走编辑api
 				let res;
 				if (this.id) {
@@ -99,18 +117,7 @@
 			},
 			handleImageSuccess(res) {
 				this.goods.imageUrl = res.url;
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === "image/jpeg";
-				const isLt2M = file.size / 1024 / 1024 < 2;
-
-				if (!isJPG) {
-					this.$message.error("上传头像图片只能是 JPG 格式!");
-				}
-				if (!isLt2M) {
-					this.$message.error("上传头像图片大小不能超过 2MB!");
-				}
-				return isJPG && isLt2M;
+				this.$refs.goods.clearValidate("imageUrl");
 			}
 		},
 		created() {

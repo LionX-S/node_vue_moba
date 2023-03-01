@@ -49,11 +49,12 @@
 				<div class="userMsg">
 					<el-avatar
 						size="medium"
-						:src="$store.state.avatarUrl"
+						:src="avatarUrl"
+						fit="fill"
 						@error="errorHandle">
 						user
 					</el-avatar>
-					<span style="margin-left: 10px">{{ $store.state.username }}</span>
+					<span style="margin-left: 10px">{{ username }}</span>
 				</div>
 			</el-header>
 			<router-view v-if="isRouterAlive"></router-view>
@@ -71,7 +72,11 @@
 		},
 		data() {
 			return {
-				isRouterAlive: true
+				isRouterAlive: true,
+				beforeUnload: "",
+				Handler: "",
+				username:"",
+				avatarUrl: ""
 			};
 		},
 		methods: {
@@ -83,7 +88,31 @@
 			},
 			errorHandle() {
 				return true;
+			},
+			beforeUnloadHandler(e) {
+				this.beforeUnload = new Date().getTime();
+			},
+			// 如果是关闭网页则清除token
+			unloadHandler(e) {
+				this.Handler = new Date().getTime() - this.beforeUnload;
+				if(this.Handler <= 5) {
+					window.localStorage.clear();
+				}
 			}
+		},
+		mounted() {
+			this.username = window.localStorage.username;
+			this.avatarUrl = window.localStorage.avatarUrl;
+			// 判断是刷新网页还是关闭网页
+			window.addEventListener("beforeunload", (e) =>
+				this.beforeUnloadHandler(e)
+			);
+			window.addEventListener("unload", (e) => this.unloadHandler(e));
+		},
+		beforeUnmount() {
+			window.removeEventListener("beforeunload", (e) =>
+				this.beforeUnloadHandler(e)
+			);
 		}
 	};
 </script>

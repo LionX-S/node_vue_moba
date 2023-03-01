@@ -43,10 +43,12 @@
 				const { token, username, avatarUrl } = res.data;
 				this.$store.dispatch("setUserMsg", { username, avatarUrl });
 				localStorage.token = token;
+				localStorage.username = username;
+				localStorage.avatarUrl = avatarUrl;
 				this.$router.push("/");
 				this.$message({
 					type: "success",
-					message: `登录成功!欢迎，${username}`
+					message: `登录成功!欢迎,${username}`
 				});
 			}
 		}

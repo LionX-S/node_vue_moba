@@ -26,8 +26,6 @@ http.interceptors.response.use(
 		return res;
 	},
 	(err) => {
-		console.log("🚀 ~ file: index.js:29 ~ err:", err)
-		
 		if (err.response.data.message) {
 			Vue.prototype.$message({
 				type: "error",

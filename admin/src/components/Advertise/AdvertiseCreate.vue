@@ -54,6 +54,7 @@
 					>保存</el-button
 				>
 				<el-button
+					v-if="!id"
 					@click="resetVal"
 					type="warning"
 					>重置</el-button
@@ -89,7 +90,9 @@
 					linkUrl: [
 						{ required: true, message: "请输入广告链接", trigger: "blur" }
 					],
-					imageUrl: [{ required: true, message: "请上传图片", trigger: "blur" }]
+					imageUrl: [
+						{ required: true, message: "请上传图片", trigger: "change" }
+					]
 				}
 			};
 		},
@@ -138,18 +141,7 @@
 
 			handleImageSuccess(res) {
 				this.advertise.imageUrl = res.url;
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === "image/jpeg";
-				const isLt2M = file.size / 1024 / 1024 < 2;
-
-				if (!isJPG) {
-					this.$message.error("上传头像图片只能是 JPG 格式!");
-				}
-				if (!isLt2M) {
-					this.$message.error("上传头像图片大小不能超过 2MB!");
-				}
-				return isJPG && isLt2M;
+				this.$refs.advertise.clearValidate("imageUrl");
 			}
 		},
 		created() {

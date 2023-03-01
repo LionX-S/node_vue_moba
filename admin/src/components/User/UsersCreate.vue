@@ -4,16 +4,23 @@
 		<el-form
 			label-width="120px"
 			label-position="left"
+			:model="user"
+			ref="user"
+			:rules="rules"
 			@submit.native.prevent="save">
-			<el-form-item label="用户名">
+			<el-form-item
+				label="用户名"
+				prop="username">
 				<el-col :span="8">
 					<el-input
 						span="6"
-						v-model="user.userName"
+						v-model="user.username"
 						placeholder="请输入用户名"></el-input>
 				</el-col>
 			</el-form-item>
-			<el-form-item label="用户密码">
+			<el-form-item
+				label="用户密码"
+				prop="password">
 				<el-col :span="8">
 					<el-input
 						type="password"
@@ -22,7 +29,9 @@
 						placeholder="请输入密码"></el-input>
 				</el-col>
 			</el-form-item>
-			<el-form-item label="头像">
+			<el-form-item
+				label="头像"
+				prop="avatarUrl">
 				<el-upload
 					class="avatar-uploader"
 					:action="$http.defaults.baseURL + '/upload'"
@@ -42,8 +51,14 @@
 			<el-form-item>
 				<el-button
 					type="primary"
-					native-type="submit"
+					@click="submitForm('user', save)"
 					>保存</el-button
+				>
+				<el-button
+					v-if="!id"
+					@click="resetVal"
+					type="warning"
+					>重置</el-button
 				>
 				<el-button
 					type="danger"
@@ -64,13 +79,30 @@
 		data() {
 			return {
 				user: {
-					userName: "",
+					username: "",
 					password: "",
 					avatarUrl: ""
+				},
+				rules: {
+					username: [
+						{ required: true, message: "请输入用户名", trigger: "blur" }
+					],
+					password: [
+						{ required: true, message: "请输入密码", trigger: "blur" }
+					],
+					avatarUrl: [
+						{ required: true, message: "请上传图片", trigger: "change" }
+					]
 				}
 			};
 		},
 		methods: {
+			async resetVal() {
+				if (!this.id && this.user.avatarUrl !== "") {
+					await deleteImage(this.user.avatarUrl);
+				}
+				this.resetForm("user");
+			},
 			async save() {
 				// 如果是新建则走新建api，如果是编辑走编辑api
 				let res;
@@ -101,18 +133,7 @@
 			},
 			handleImageSuccess(res) {
 				this.user.avatarUrl = res.url;
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === "image/jpeg";
-				const isLt2M = file.size / 1024 / 1024 < 2;
-
-				if (!isJPG) {
-					this.$message.error("上传头像图片只能是 JPG 格式!");
-				}
-				if (!isLt2M) {
-					this.$message.error("上传头像图片大小不能超过 2MB!");
-				}
-				return isJPG && isLt2M;
+				this.$refs.user.clearValidate("avatarUrl");
 			}
 		},
 		created() {
@@ -122,7 +143,7 @@
 		// 解决由编辑页面直接点击新建功能时，form遗留数据的issue
 		beforeRouteLeave(to, from, next) {
 			if (to.path === "/users/create") {
-				this.user.userName = "";
+				this.user.username = "";
 				this.user.avatarUrl = "";
 			}
 			next();

@@ -4,8 +4,12 @@
 		<el-form
 			label-width="120px"
 			label-position="left"
-			@submit.native.prevent="save">
-			<el-form-item label="文章分类">
+			:model="article"
+			:rules="rules"
+			ref="article">
+			<el-form-item
+				label="文章分类"
+				prop="category">
 				<el-select
 					v-model="article.category"
 					placeholder="请选择">
@@ -17,12 +21,16 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="标题">
+			<el-form-item
+				label="标题"
+				prop="title">
 				<el-input
 					v-model="article.title"
 					placeholder="请输入文章标题"></el-input>
 			</el-form-item>
-			<el-form-item label="内容">
+			<el-form-item
+				label="内容"
+				prop="comment">
 				<vue-editor
 					v-model="article.comment"
 					useCustomImageHandler
@@ -32,8 +40,14 @@
 			<el-form-item>
 				<el-button
 					type="primary"
-					native-type="submit"
+					@click="submitForm('article', save)"
 					>保存</el-button
+				>
+				<el-button
+					v-if="!id"
+					@click="resetVal"
+					type="warning"
+					>重置</el-button
 				>
 				<el-button
 					type="danger"
@@ -59,22 +73,31 @@
 					category: ""
 				},
 				articleCategory: [],
-				imageArray: []
+				imageArray: [],
+				rules: {
+					title: [
+						{ required: true, message: "请填写文章标题", trigger: "blur" }
+					],
+					comment: [
+						{ required: true, message: "请填写文章内容", trigger: "blur" }
+					],
+					category: [
+						{ required: true, message: "请选择文章分类", trigger: "blur" }
+					]
+				}
 			};
 		},
 		components: {
 			VueEditor
 		},
 		methods: {
+			async resetVal() {
+				this.imageArray.map(async (item) => {
+					await deleteImage(item);
+				});
+				this.resetForm("article");
+			},
 			async save() {
-				// 填写数据校验
-				if (!this.article.title.trim()) {
-					this.$message({
-						type: "warning",
-						message: "请填写正确数据！"
-					});
-					return;
-				}
 				// 如果是新建则走新建api，如果是编辑走编辑api
 				let res;
 				if (this.id) {
