@@ -48,7 +48,8 @@
 				this.$router.push("/");
 				this.$message({
 					type: "success",
-					message: `登录成功!欢迎,${username}`
+					message: `登录成功!欢迎,${username}`,
+					center: true
 				});
 			}
 		}

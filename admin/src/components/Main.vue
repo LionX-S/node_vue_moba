@@ -54,7 +54,16 @@
 						@error="errorHandle">
 						user
 					</el-avatar>
-					<span style="margin-left: 10px">{{ username }}</span>
+					<el-dropdown @command="handleCommand">
+						<span
+							style="margin-left: 10px"
+							class="el-dropdown-link"
+							>{{ username }}<i class="el-icon-arrow-down el-icon--right"></i
+						></span>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item command="logout">退出</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
 				</div>
 			</el-header>
 			<router-view v-if="isRouterAlive"></router-view>
@@ -75,7 +84,7 @@
 				isRouterAlive: true,
 				beforeUnload: "",
 				Handler: "",
-				username:"",
+				username: "",
 				avatarUrl: ""
 			};
 		},
@@ -95,8 +104,15 @@
 			// 如果是关闭网页则清除token
 			unloadHandler(e) {
 				this.Handler = new Date().getTime() - this.beforeUnload;
-				if(this.Handler <= 5) {
+				if (this.Handler <= 5) {
 					window.localStorage.clear();
+				}
+			},
+			// 退出
+			handleCommand(command) {
+				if(command == "logout") {
+					window.localStorage.clear();
+					this.$router.push("/login");
 				}
 			}
 		},
@@ -161,4 +177,11 @@
 		display: inline-block;
 		vertical-align: middle;
 	}
+	.el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
 </style>

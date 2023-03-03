@@ -86,7 +86,8 @@
 					const { code, message } = res.data;
 					this.$message({
 						type: "success",
-						message
+						message,
+						center: true
 					});
 					deleteImage(imageUrl);
 					this.reload();

@@ -29,7 +29,8 @@ http.interceptors.response.use(
 		if (err.response.data.message) {
 			Vue.prototype.$message({
 				type: "error",
-				message: err.response.data.message
+				message: err.response.data.message,
+				center:true
 			});
 			router.push("/login");
 		}

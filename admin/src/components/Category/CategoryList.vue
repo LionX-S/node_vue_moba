@@ -81,7 +81,8 @@
 					const { message } = res.data;
 					this.$message({
 						type: "success",
-						message
+						message,
+						center: true
 					});
 					this.reload();
 				});

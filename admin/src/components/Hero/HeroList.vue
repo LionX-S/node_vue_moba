@@ -106,7 +106,8 @@
 					const { message } = res.data;
 					this.$message({
 						type: "success",
-						message
+						message,
+						center: true
 					});
 					// 删除已经上传的图片
 					deleteImage(rowData.avatar);

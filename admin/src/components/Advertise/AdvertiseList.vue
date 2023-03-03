@@ -93,7 +93,8 @@
 					await deleteImage(imageUrl);
 					this.$message({
 						type: "success",
-						message
+						message,
+						center:true
 					});
 					this.reload();
 				});
