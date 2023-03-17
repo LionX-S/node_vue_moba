@@ -1,11 +1,12 @@
 <template lang="">
   <div>
-    <h1>demo</h1>
-    <nuxt-link to="/index">Index page</nuxt-link>
+    friends
   </div>
 </template>
-<script setup>
-
+<script>
+export default {
+  
+}
 </script>
 <style lang="">
   

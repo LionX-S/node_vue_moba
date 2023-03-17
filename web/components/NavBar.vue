@@ -1,13 +1,9 @@
 <template lang="">
-  <div>
-    
-  </div>
+		
 </template>
-<script>
-export default {
-  
-}
-</script>
-<style lang="">
-  
+<script setup lang="ts"></script>
+<style scoped>
+  .el-menu{
+    justify-content: center;
+  }
 </style>
