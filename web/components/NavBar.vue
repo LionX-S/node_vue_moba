@@ -1,6 +1,7 @@
 <template>
 	<v-navigation-drawer
 		v-model="drawer"
+    temporary
 		class="bg-deep-purple">
 		<v-list nav>
 			<v-list-item
@@ -27,10 +28,10 @@
 	<v-app-bar>
 		<v-app-bar-nav-icon class="d-flex d-sm-none" @click.stop="toggleNav"></v-app-bar-nav-icon>
 		<v-sheet
-			class="d-flex align-center justify-space-between mx-auto w-100"
+			class="d-flex align-center justify-space-between mx-auto w-100 h-100"
 			:max-width="1180">
 			<v-sheet>电磁力</v-sheet>
-			<v-sheet class="d-none d-sm-flex justify-space-around">
+			<v-sheet class="d-none d-sm-flex justify-space-around h-100">
 				<v-list-item
 					title="首页"
 					value="home"

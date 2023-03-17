@@ -1,8 +1,6 @@
 <template lang="">
-  <v-sheet class="mx-auto" :max-width="1080" :min-width="920">
-    <Carousel :carouselData="carouselData"></Carousel>
-    <Card></Card>
-  </v-sheet>
+	<Carousel :carouselData="carouselData"></Carousel>
+	<Card></Card>
 </template>
 <script setup>
 	const carouselData = [

@@ -1,7 +1,6 @@
 <template>
   <v-card
     class=""
-    max-width="55%"
   >
     <v-img
       src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
