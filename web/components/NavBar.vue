@@ -25,7 +25,7 @@
 		</v-list>
 	</v-navigation-drawer>
 
-	<v-app-bar>
+	<v-app-bar id="navbar">
 		<v-app-bar-nav-icon class="d-flex d-sm-none" @click.stop="toggleNav"></v-app-bar-nav-icon>
 		<v-sheet
 			class="d-flex align-center justify-space-between mx-auto w-100 h-100"

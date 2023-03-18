@@ -1,6 +1,6 @@
 <template lang="">
 	<Carousel :carouselData="carouselData"></Carousel>
-	<Card></Card>
+	<Card v-for="i in 4"></Card>
 </template>
 <script setup>
 	const carouselData = [

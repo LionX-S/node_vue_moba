@@ -1,6 +1,7 @@
 <template>
   <v-card
-    class=""
+    class="mt-10"
+    width="65%"
   >
     <v-img
       src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
@@ -21,7 +22,7 @@
         color="orange-lighten-2"
         variant="text"
       >
-        Explore
+        开始阅读
       </v-btn>
 
       <v-spacer></v-spacer>
