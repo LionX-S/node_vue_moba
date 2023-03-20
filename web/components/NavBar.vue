@@ -25,7 +25,7 @@
 		</v-list>
 	</v-navigation-drawer>
 
-	<v-app-bar id="navbar">
+	<v-app-bar id="navbar" class="navbarClass">
 		<v-app-bar-nav-icon class="d-flex d-sm-none" @click.stop="toggleNav"></v-app-bar-nav-icon>
 		<v-sheet
 			class="d-flex align-center justify-space-between mx-auto w-100 h-100"
@@ -73,4 +73,14 @@
 			: "dark";
 	}
 </script>
-<style scoped></style>
+<style scoped lang="scss">
+.navbarClass{
+	position: relative;
+		animation-name: navBarAni;
+		animation-duration: .5s;
+		animation-timing-function: linear;
+		-webkit-animation-name: navBarAni;
+		-webkit-animation-duration: .5s;
+		-webkit-animation-timing-function: linear;
+}
+</style>

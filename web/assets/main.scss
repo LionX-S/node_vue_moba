@@ -1,0 +1,65 @@
+@keyframes homeCardAnima {
+  0% {
+    top: 40px;
+  }
+
+  25% {
+    top: 30px;
+  }
+
+  50% {
+    top: 20px;
+  }
+
+  75% {
+    top: 10px;
+  }
+
+  100% {
+    top: 0px;
+  }
+}
+
+@-webkit-keyframes homeCardAnima {
+  0% {
+    top: 40px;
+  }
+
+  25% {
+    top: 30px;
+  }
+
+  50% {
+    top: 20px;
+  }
+
+  75% {
+    top: 10px;
+  }
+
+  100% {
+    top: 0px;
+  }
+}
+
+@keyframes navBarAni {
+  0% {
+    top: -60px;
+  }
+
+  25% {
+    top: -45px;
+  }
+
+  50% {
+    top: -30px;
+  }
+
+  75% {
+    top: -15px;
+  }
+
+  100% {
+    top: 0px;
+  }
+}

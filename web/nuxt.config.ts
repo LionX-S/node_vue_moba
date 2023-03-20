@@ -16,5 +16,12 @@ export default defineNuxtConfig({
     define: {
       'process.env.DEBUG': false,
     },
+    css:{
+      preprocessorOptions:{
+        scss:{
+          additionalData:'@use "@/assets/main.scss" as *;'
+        }
+      }
+    }
   },
 })
