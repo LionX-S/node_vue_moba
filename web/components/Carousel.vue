@@ -1,6 +1,7 @@
 <template>
 	<v-carousel
 		class="mt-5 rounded-lg"
+		
 		:height="carouselHeight"
 		hide-delimiter-background
 		show-arrows="hover">
@@ -11,10 +12,10 @@
 			cover>
 			<v-row class="d-flex flex-column position-absolute" style="bottom:5%; left: 5%;">
 				<v-col>
-					<v-label style="font-weight: 700;font-size: xx-large;" class="text-white">轻轻走</v-label>
+					<v-label class="text-white text-h4">轻轻走</v-label>
 				</v-col>
 				<v-col>
-					<v-btn rounded="pill" color="#E54D42" style="color: white;">开始阅读</v-btn>
+					<v-btn rounded="pill" color="#E54D42" class="text-white">开始阅读</v-btn>
 				</v-col>
 			</v-row>
 		</v-carousel-item>
