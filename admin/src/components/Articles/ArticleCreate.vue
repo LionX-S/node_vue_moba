@@ -29,6 +29,25 @@
 					placeholder="请输入文章标题"></el-input>
 			</el-form-item>
 			<el-form-item
+				label="文章封面"
+				prop="imageUrl">
+				<el-upload
+					class="avatar-uploader"
+					:action="$http.defaults.baseURL + '/upload'"
+					:headers="getAuthHeaders()"
+					:show-file-list="false"
+					:on-success="handleImageSuccess"
+					:before-upload="beforeAvatarUpload">
+					<img
+						v-if="article.imageUrl"
+						:src="article.imageUrl"
+						class="avatar" />
+					<i
+						v-else
+						class="el-icon-plus avatar-uploader-icon"></i>
+				</el-upload>
+			</el-form-item>
+			<el-form-item
 				label="内容"
 				prop="comment">
 				<vue-editor
@@ -70,7 +89,8 @@
 				article: {
 					title: "",
 					comment: "",
-					category: ""
+					category: "",
+					imageUrl: ""
 				},
 				articleCategory: [],
 				imageArray: [],
@@ -83,6 +103,9 @@
 					],
 					category: [
 						{ required: true, message: "请选择文章分类", trigger: "blur" }
+					],
+					imageUrl: [
+						{ required: true, message: "请上传图片", trigger: "change" }
 					]
 				}
 			};
@@ -106,7 +129,8 @@
 					res = await this.$http.post("rest/articles", {
 						title: this.article.title,
 						comment: this.article.comment,
-						category: this.article.category
+						category: this.article.category,
+						imageUrl: this.article.imageUrl
 					});
 				}
 				this.$router.push("/articles/list");
@@ -117,6 +141,9 @@
 			},
 			// 取消功能
 			async cancel() {
+				if (!this.id && this.article.imageUrl !== "") {
+					await deleteImage(this.article.imageUrl);
+				}
 				this.imageArray.map((item) => {
 					deleteImage(item);
 				});
@@ -147,6 +174,11 @@
 			// 删除图片
 			async handleImageRemoved(file) {
 				deleteImage(file);
+			},
+
+			handleImageSuccess(res) {
+				this.article.imageUrl = res.url;
+				this.$refs.article.clearValidate("imageUrl");
 			}
 		},
 		created() {
@@ -158,6 +190,7 @@
 				this.article.title = "";
 				this.article.comment = "";
 				this.article.category = "";
+				this.article.imageUrl = "";
 			}
 			next();
 		}

@@ -1,9 +1,17 @@
 <template lang="">
-	<Carousel :carouselData="carouselData"></Carousel>
+	<Carousel :carouselData="carouselData.data"></Carousel>
 	<v-container class="pa-0">
 		<v-row>
 			<v-col>
-				<Card v-for="(i, index) in 4" :key="index" :id="index"></Card>
+				<Card
+					v-for="(item) in cardData.data"
+					:key="item.id"
+					:id="item.id"
+					:imageUrl="item.imageUrl"
+					:title="item.title"
+					:createTime="item.create_time"
+					:content="item.comment"
+					:length="cardData.data.length"></Card>
 			</v-col>
 			<v-col
 				cols="4"
@@ -18,18 +26,15 @@
 <script setup>
 	import { ref, onMounted } from "vue";
 	const { $addAniByID } = useNuxtApp();
-	const carouselData = [
-		{ link: "#", imgUrl: "https://cdn.vuetifyjs.com/images/cards/docks.jpg" },
-		{
-			imgUrl: "https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-		},
-		{
-			imgUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-		}
-	];
+	const { data: carouselData } = await useFetch(
+		"http://localhost:3000/web/api/rest/advertise"
+	);
+	const { data: cardData } = await useFetch(
+		"http://localhost:3000/web/api/rest/articles"
+	);
 	if (process.client) {
 		onMounted(() => {
-			$addAniByID('cardContainer', 'scrollAna');
+			$addAniByID("cardContainer", "scrollAna");
 		});
 	}
 </script>

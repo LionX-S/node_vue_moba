@@ -10,6 +10,7 @@ app.use(express.json());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 require("./routes/admin")(app);
+require("./routes/web")(app);
 
 app.listen(3000, () => {
 	console.log("后台启动在3000端口");

@@ -8,7 +8,7 @@
 		<v-carousel-item
 			v-for="(item, i) in carouselData"
 			:key="i"
-			:src="item.imgUrl"
+			:src="item.imageUrl"
 			cover>
 			<v-row class="d-flex flex-column position-absolute" style="bottom:5%; left: 5%;">
 				<v-col>
@@ -27,7 +27,8 @@
 	defineProps<{
 		carouselData?: Array<{
 			link?: string;
-			imgUrl?: string;
+			imageUrl?: string;
+			title?: string
 		}>;
 	}>();
 

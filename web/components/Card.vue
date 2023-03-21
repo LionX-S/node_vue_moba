@@ -3,23 +3,19 @@
 		id="articleCard"
 		class="mt-10">
 		<v-img
-			src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+			:src="imageUrl"
 			height="200px"
 			cover></v-img>
 
-		<v-card-title :id="'articleTitle' + props.id">
-			Top western road trips
+		<v-card-title :id="id">
+			{{ title }}
 		</v-card-title>
 
-		<v-card-subtitle> 1,000 miles of wonder </v-card-subtitle>
+		<v-card-subtitle> {{ createTime }}</v-card-subtitle>
 		<v-card-text
 			class="overflow-hidden"
 			style="height: 55px">
-			I'm a thing. But, like most politicians, he promised more than he could
-			deliver. You won't have time for sleeping, soldier, not with all the bed
-			making you'll be doing. Then we'll go with that data file! Hey, you add a
-			one and two zeros to that or we walk! You're going to do his laundry? I've
-			got to find a way to escape.
+			{{ content }}
 		</v-card-text>
 		<v-card-actions>
 			<v-btn
@@ -53,13 +49,20 @@
 	</v-card>
 </template>
 <script setup>
-	import { ref, onMounted } from "vue";
+	import { onMounted } from "vue";
+	const props = defineProps({
+		id: String,
+		imageUrl:String,
+		title: String,
+		createTime: String,
+		content: String,
+		length: Number
+	})
 	const { $addAniByID } = useNuxtApp();
-	const props = defineProps(["id"]);
 	if (process.client) {
 		onMounted(() => {
-			for (let i = 0; i < 4; i++) {
-				$addAniByID(`articleTitle${i}`, "scrollAna");
+			for (let i = 0; i < props.length; i++) {
+				$addAniByID(props.id, "scrollAna");
 			}
 		});
 	}
