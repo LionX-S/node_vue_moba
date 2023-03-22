@@ -30,6 +30,21 @@ module.exports = (app) => {
       }
     })
   });
+  // 根据id获取数据
+  router.get("/:id", async (req, res) => {
+    let sql = `select * from ${req.params.resource} where id = '${req.params.id}'`;
+		await mysql().query(sql, (err, result) => {
+			if (err) {
+				res.send.status(500).send({
+					message: "获取数据失败"
+				});
+			} else {
+				res.status(200).send({
+					data: result
+				});
+			}
+		});
+  })
 
   app.use("/web/api/rest/:resource", router);
 }

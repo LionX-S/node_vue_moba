@@ -22,6 +22,13 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item
+				label="广告标题"
+				prop="linkUrl">
+				<el-input
+					v-model="advertise.title"
+					placeholder="请输入广告标题"></el-input>
+			</el-form-item>
+			<el-form-item
 				label="广告链接"
 				prop="linkUrl">
 				<el-input
@@ -78,6 +85,7 @@
 			return {
 				advertise: {
 					linkUrl: "",
+					title: "",
 					category: "",
 					imageUrl: ""
 				},
@@ -89,6 +97,9 @@
 					],
 					linkUrl: [
 						{ required: true, message: "请输入广告链接", trigger: "blur" }
+					],
+					title: [
+						{ required: true, message: "请输入广告标题", trigger: "blur" }
 					],
 					imageUrl: [
 						{ required: true, message: "请上传图片", trigger: "change" }
@@ -150,6 +161,7 @@
 		},
 		beforeRouteLeave(to, from, next) {
 			if (to.path === "/advertise/create") {
+				this.advertise.linkUrl = "";
 				this.advertise.linkUrl = "";
 				this.advertise.category = "";
 				this.advertise.imageUrl = "";

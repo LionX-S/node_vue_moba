@@ -4,7 +4,7 @@
 		<v-row>
 			<v-col>
 				<Card
-					v-for="(item) in cardData.data"
+					v-for="item in cardData.data"
 					:key="item.id"
 					:id="item.id"
 					:imageUrl="item.imageUrl"
@@ -26,12 +26,8 @@
 <script setup>
 	import { ref, onMounted } from "vue";
 	const { $addAniByID } = useNuxtApp();
-	const { data: carouselData } = await useFetch(
-		"http://localhost:3000/web/api/rest/advertise"
-	);
-	const { data: cardData } = await useFetch(
-		"http://localhost:3000/web/api/rest/articles"
-	);
+	const { data: carouselData } = await useFetch("/api/advertise");
+	const { data: cardData } = await useFetch("/api/articles");
 	if (process.client) {
 		onMounted(() => {
 			$addAniByID("cardContainer", "scrollAna");

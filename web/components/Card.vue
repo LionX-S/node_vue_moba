@@ -21,7 +21,9 @@
 			<v-btn
 				color="orange-lighten-2"
 				variant="text">
-				开始阅读
+				<NuxtLink :to="`/articleDetails/${id}`" class="text-decoration-none text-orange">
+					开始阅读
+				</NuxtLink>
 			</v-btn>
 
 			<v-spacer></v-spacer>
