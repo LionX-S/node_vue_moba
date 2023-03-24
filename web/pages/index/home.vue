@@ -24,10 +24,10 @@
 	</v-container>
 </template>
 <script setup>
-	import { ref, onMounted } from "vue";
 	const { $addAniByID } = useNuxtApp();
-	const { data: carouselData } = await useFetch("/api/advertise");
-	const { data: cardData } = await useFetch("/api/articles");
+	const { apiBase } = useRuntimeConfig().public;
+	const { data: carouselData } = await useFetch(`${apiBase}/advertise`);
+	const { data: cardData } = await useFetch(`${apiBase}/articles`);
 	if (process.client) {
 		onMounted(() => {
 			$addAniByID("cardContainer", "scrollAna");
