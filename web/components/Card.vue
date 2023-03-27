@@ -1,7 +1,7 @@
 <template>
 	<v-card
 		id="articleCard"
-		class="mt-10">
+		class="mt-10 w-100">
 		<v-img
 			:src="imageUrl"
 			height="200px"
@@ -11,17 +11,21 @@
 			{{ title }}
 		</v-card-title>
 
-		<v-card-subtitle> {{ createTime }}</v-card-subtitle>
+		<v-card-subtitle>
+			{{ moment(createTime).format("YYYY-MM-DD HH:MM:SS") }}</v-card-subtitle
+		>
 		<v-card-text
 			class="overflow-hidden"
-			style="height: 55px">
-			{{ content }}
+			style="height: 55px"
+			v-html="content">
 		</v-card-text>
 		<v-card-actions>
 			<v-btn
 				color="orange-lighten-2"
 				variant="text">
-				<NuxtLink :to="`/articleDetails/${id}`" class="text-decoration-none text-orange">
+				<NuxtLink
+					:to="`/articleDetails/${id}`"
+					class="text-decoration-none text-orange">
 					开始阅读
 				</NuxtLink>
 			</v-btn>
@@ -51,15 +55,16 @@
 	</v-card>
 </template>
 <script setup>
+	import moment from "moment";
 	import { onMounted } from "vue";
 	const props = defineProps({
 		id: String,
-		imageUrl:String,
+		imageUrl: String,
 		title: String,
 		createTime: String,
 		content: String,
 		length: Number
-	})
+	});
 	const { $addAniByID } = useNuxtApp();
 	if (process.client) {
 		onMounted(() => {

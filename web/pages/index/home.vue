@@ -16,7 +16,7 @@
 			<v-col
 				cols="4"
 				class="d-none d-sm-flex">
-				<div id="cardContainer">
+				<div id="cardContainer" class="w-100">
 					<Card></Card>
 				</div>
 			</v-col>

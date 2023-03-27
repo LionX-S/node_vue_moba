@@ -1,11 +1,9 @@
 <template>
-	<v-layout>
+	<v-layout :max-width="1280">
 		<NavBar></NavBar>
-		<v-main>
-			<v-container class="mx-auto pl-3 pr-3">
-				<NuxtPage></NuxtPage>
-			</v-container>
-		</v-main>
+		<v-container class="mx-auto pl-3 pr-3">
+			<NuxtPage></NuxtPage>
+		</v-container>
 	</v-layout>
 </template>
 
