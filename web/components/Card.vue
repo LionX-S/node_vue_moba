@@ -3,7 +3,7 @@
 		id="articleCard"
 		class="mt-10 w-100">
 		<v-img
-			:src="imageUrl"
+			:src="isOver ? imageUrl : ''"
 			height="200px"
 			cover></v-img>
 
@@ -63,14 +63,13 @@
 		title: String,
 		createTime: String,
 		content: String,
-		length: Number
 	});
-	const { $addAniByID } = useNuxtApp();
+	const { $addAniByID, $addImage } = useNuxtApp();
+	const isOver = ref(false);
 	if (process.client) {
 		onMounted(() => {
-			for (let i = 0; i < props.length; i++) {
-				$addAniByID(props.id, "scrollAna");
-			}
+			$addAniByID(props.id, "scrollAna");
+			$addImage('articleCard', isOver);
 		});
 	}
 </script>

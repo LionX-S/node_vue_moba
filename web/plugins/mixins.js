@@ -11,7 +11,18 @@ export default defineNuxtPlugin(() => {
 						.getElementById(id)
 						.getBoundingClientRect().top;
 					if (topHeight < innerHeight) {
-						document.getElementById(id).classList.add(className)
+						document.getElementById(id).classList.add(className);
+					}
+				});
+			},
+			addImage(id, isOver) {
+				let innerHeight = window.innerHeight;
+				window.addEventListener("scroll", () => {
+					let topHeight = id && document
+						.getElementById(id)
+						.getBoundingClientRect().top;
+					if (topHeight < innerHeight) {
+						isOver.value = true;
 					}
 				});
 			}

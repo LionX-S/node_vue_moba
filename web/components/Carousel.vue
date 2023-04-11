@@ -40,7 +40,7 @@
 	}>();
 
 	// 根据窗口调整高度
-	let carouselHeight: Ref<number> = ref(0);
+	let carouselHeight = ref<number>(0);
 	if (process.client) {
 		onMounted(() => {
 			carouselHeight.value =
