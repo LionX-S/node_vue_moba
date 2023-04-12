@@ -10,13 +10,15 @@
 					:imageUrl="item.imageUrl"
 					:title="item.title"
 					:createTime="item.create_time"
-					:content="item.comment"
-					:length="cardData.data.length"></Card>
+					:content="item.comment"></Card>
 			</v-col>
 			<v-col
 				cols="4"
 				class="d-none d-sm-flex">
-				<div id="cardContainer" class="w-100">
+				<div
+					id="cardContainer"
+					class="w-100"
+					:class="{ scrollAna: isScrollAna }">
 					<Card></Card>
 				</div>
 			</v-col>
@@ -24,13 +26,14 @@
 	</v-container>
 </template>
 <script setup>
-	const { $addAniByID } = useNuxtApp();
+	const { $changeRefValue } = useNuxtApp();
 	const { apiBase } = useRuntimeConfig().public;
+	const isScrollAna = ref(false);
 	const { data: carouselData } = await useFetch(`${apiBase}/advertise`);
 	const { data: cardData } = await useFetch(`${apiBase}/articles`);
 	if (process.client) {
 		onMounted(() => {
-			$addAniByID("cardContainer", "scrollAna");
+			$changeRefValue("cardContainer", isScrollAna);
 		});
 	}
 </script>

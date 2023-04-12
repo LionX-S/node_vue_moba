@@ -7,7 +7,7 @@
 			height="200px"
 			cover></v-img>
 
-		<v-card-title :id="id">
+		<v-card-title :id="id" :class="{scrollAna: isScrollAna}">
 			{{ title }}
 		</v-card-title>
 
@@ -64,12 +64,13 @@
 		createTime: String,
 		content: String,
 	});
-	const { $addAniByID, $addImage } = useNuxtApp();
+	const { $changeRefValue } = useNuxtApp();
 	const isOver = ref(false);
+	const isScrollAna = ref(false);
 	if (process.client) {
 		onMounted(() => {
-			$addAniByID(props.id, "scrollAna");
-			$addImage('articleCard', isOver);
+			$changeRefValue(props.id, isScrollAna);
+			$changeRefValue('articleCard', isOver);
 		});
 	}
 </script>
