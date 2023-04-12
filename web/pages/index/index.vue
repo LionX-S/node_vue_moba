@@ -10,7 +10,9 @@
 					:imageUrl="item.imageUrl"
 					:title="item.title"
 					:createTime="item.create_time"
-					:content="item.comment"></Card>
+					:content="item.comment"
+					:thumbUp="item.thumbUp"
+					:pageView="item.pageView"></Card>
 			</v-col>
 			<v-col
 				cols="4"

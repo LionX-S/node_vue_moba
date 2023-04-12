@@ -3,11 +3,14 @@
 		id="articleCard"
 		class="mt-10 w-100">
 		<v-img
+			v-if="imageUrl"
 			:src="isOver ? imageUrl : ''"
-			height="200px"
+			height="400px"
 			cover></v-img>
 
-		<v-card-title :id="id" :class="{scrollAna: isScrollAna}">
+		<v-card-title
+			:id="id"
+			:class="{ scrollAna: isScrollAna }">
 			{{ title }}
 		</v-card-title>
 
@@ -25,7 +28,12 @@
 				variant="text">
 				<NuxtLink
 					:to="`/articleDetails/${id}`"
-					class="text-decoration-none text-orange">
+					class="text-decoration-none text-orange"
+					@click="
+						() => {
+							addThumbUp_PageView(id, 'pageView');
+						}
+					">
 					开始阅读
 				</NuxtLink>
 			</v-btn>
@@ -37,19 +45,21 @@
 					size="small"
 					color="surface-variant"
 					variant="text"
-					icon="mdi-heart"></v-btn>
-
+					prepend-icon="mdi-heart"
+					@click="
+						() => {
+							addThumbUp_PageView(id, 'thumbUp');
+						}
+					"
+					>{{ thumbUp }}
+				</v-btn>
 				<v-btn
 					size="small"
 					color="surface-variant"
 					variant="text"
-					icon="mdi-bookmark"></v-btn>
-
-				<v-btn
-					size="small"
-					color="surface-variant"
-					variant="text"
-					icon="mdi-share-variant"></v-btn>
+					prepend-icon="mdi-eye">
+					{{ pageView }}
+				</v-btn>
 			</v-card-actions>
 		</v-card-actions>
 	</v-card>
@@ -63,16 +73,29 @@
 		title: String,
 		createTime: String,
 		content: String,
+		thumbUp: Number,
+		pageView: Number
 	});
 	const { $changeRefValue } = useNuxtApp();
+	const { apiBase } = useRuntimeConfig().public;
 	const isOver = ref(false);
 	const isScrollAna = ref(false);
 	if (process.client) {
 		onMounted(() => {
 			$changeRefValue(props.id, isScrollAna);
-			$changeRefValue('articleCard', isOver);
+			$changeRefValue("articleCard", isOver);
 		});
 	}
+	const addThumbUp_PageView = async (id, type) => {
+		await useFetch(`${apiBase}/articles/thumb_view/${id}`, {
+			method: "put",
+			body: {
+				id,
+				thumbUp: type==='thumbUp' ? props.thumbUp + 1 : props.thumbUp,
+				pageView: type==='pageView' ? props.pageView + 1 : props.pageView
+			}
+		});
+	};
 </script>
 
 <style lang="scss">

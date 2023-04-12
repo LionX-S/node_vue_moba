@@ -26,7 +26,7 @@ module.exports = (app) => {
 		await mysql().query(createInsertSQL(req), (err, result) => {
 			if (err) {
 				res.status(500).send({
-					message: "新增失败！"
+					message: err
 				});
 			} else {
 				res.status(200).send({

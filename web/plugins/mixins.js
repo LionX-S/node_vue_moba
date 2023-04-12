@@ -6,14 +6,16 @@ export default defineNuxtPlugin(() => {
 		provide: {
 			changeRefValue(id, refValue) {
 				let innerHeight = window.innerHeight;
-				window.addEventListener("scroll", () => {
+				const scrollHandle = () => {
 					let topHeight = id && document
 						.getElementById(id)
 						.getBoundingClientRect().top;
 					if (topHeight < innerHeight) {
 						refValue.value = true;
+						window.removeEventListener("scroll",scrollHandle)
 					}
-				});
+				}
+				window.addEventListener("scroll", scrollHandle);
 			}
 		}
 	};

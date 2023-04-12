@@ -8,7 +8,7 @@
 				prepend-icon="mdi-home-circle"
 				title="首页"
 				value="home"
-				to="/home">
+				to="/">
 			</v-list-item>
 			<v-list-item
 				prepend-icon="mdi-account-supervisor-circle"
@@ -35,7 +35,7 @@
 				<v-list-item
 					title="首页"
 					value="home"
-					to="/home">
+					to="/">
 				</v-list-item>
 				<v-list-item
 					title="圈子"
