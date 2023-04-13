@@ -2,6 +2,8 @@
 	<v-container>
 		<v-sheet
 			:max-width="1280"
+			border
+			elevations="6"
 			class="mx-auto">
 			<v-sheet class="bounce-enter">
 				<v-img
@@ -20,15 +22,11 @@
 					<v-sheet class="d-flex justify-end">
 						<v-btn
 							size="small"
-							color="surface-variant"
+							:style="{color: isThumbUp ? 'red' : 'surface-variant'}"
 							variant="text"
 							prepend-icon="mdi-heart"
-							@click="
-								() => {
-									addThumbUp_PageView(id, 'thumbUp');
-								}
-							"
-							>{{ thumbUp }}
+							@click="addThumbUp_PageView"
+							>{{ isThumbUp ? thumbUp + 1 : thumbUp }}
 						</v-btn>
 						<v-btn
 							size="small"
@@ -39,7 +37,9 @@
 						</v-btn>
 					</v-sheet>
 				</v-sheet>
-				<v-sheet v-html="comment" class="mt-10"></v-sheet>
+				<v-sheet
+					v-html="comment"
+					class="mt-10 overflow-auto"></v-sheet>
 			</v-sheet>
 		</v-sheet>
 	</v-container>
@@ -51,7 +51,23 @@
 	const { data: articleData } = await useFetch(
 		`${apiBase}/articles/${articleID}`
 	);
-	const { imageUrl, title, create_time, comment, thumbUp, pageView } = articleData.value.data[0];
+	const { imageUrl, title, create_time, comment, thumbUp, pageView } =
+		articleData.value.data[0];
+	const isThumbUp = ref(false);
+	const addThumbUp_PageView = async () => {
+		if (!isThumbUp.value) {
+			await useFetch(`${apiBase}/articles/thumb_view`, {
+				method: "put",
+				body: {
+					id: articleID,
+					thumbUp: thumbUp+1,
+					pageView
+				}
+			});
+			isThumbUp.value = true;
+		}
+		return;
+	};
 </script>
 <style lang="scss">
 	.bounce-enter {

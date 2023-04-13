@@ -48,14 +48,18 @@ module.exports = (app) => {
 		});
 	});
 
-	router.put("/thumb_view/:id", async (req, res) => {
+	router.put("/thumb_view", async (req, res) => {
 		await mysql().query(
-			`update ${req.params.resource} set thumbUp=${req.body.thumbUp}, pageView=${req.body.pageView} where id='${req.params.id}'`,
+			`update ${req.params.resource} set thumbUp=${req.body.thumbUp}, pageView=${req.body.pageView} where id='${req.body.id}'`,
 			(err, result) => {
         if(err) {
-          res.status(400)
+          res.status(400).send({
+            err
+          })
         }else{
-          res.status(200)
+          res.status(200).send({
+            message:'success'
+          })
         }
       }
 		);

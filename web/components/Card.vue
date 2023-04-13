@@ -14,15 +14,15 @@
 			{{ title }}
 		</v-card-title>
 
-		<v-card-subtitle>
-			{{ moment(createTime).format("YYYY-MM-DD HH:MM:SS") }}</v-card-subtitle
-		>
+		<v-card-subtitle v-if="createTime">
+			{{ moment(createTime).format("YYYY-MM-DD HH:MM:SS") }}
+		</v-card-subtitle>
 		<v-card-text
 			class="overflow-hidden"
 			style="height: 55px"
 			v-html="content">
 		</v-card-text>
-		<v-card-actions>
+		<v-card-actions v-if="thumbUp">
 			<v-btn
 				color="orange-lighten-2"
 				variant="text">
@@ -31,7 +31,7 @@
 					class="text-decoration-none text-orange"
 					@click="
 						() => {
-							addThumbUp_PageView(id, 'pageView');
+							addThumbUp_PageView(id);
 						}
 					">
 					开始阅读
@@ -46,11 +46,6 @@
 					color="surface-variant"
 					variant="text"
 					prepend-icon="mdi-heart"
-					@click="
-						() => {
-							addThumbUp_PageView(id, 'thumbUp');
-						}
-					"
 					>{{ thumbUp }}
 				</v-btn>
 				<v-btn
@@ -86,13 +81,13 @@
 			$changeRefValue("articleCard", isOver);
 		});
 	}
-	const addThumbUp_PageView = async (id, type) => {
-		await useFetch(`${apiBase}/articles/thumb_view/${id}`, {
+	const addThumbUp_PageView = async (id) => {
+		await useFetch(`${apiBase}/articles/thumb_view`, {
 			method: "put",
 			body: {
 				id,
-				thumbUp: type==='thumbUp' ? props.thumbUp + 1 : props.thumbUp,
-				pageView: type==='pageView' ? props.pageView + 1 : props.pageView
+				thumbUp: props.thumbUp,
+				pageView: props.pageView + 1
 			}
 		});
 	};

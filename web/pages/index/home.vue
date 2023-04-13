@@ -21,7 +21,7 @@
 					id="cardContainer"
 					class="w-100"
 					:class="{ scrollAna: isScrollAna }">
-					<Card></Card>
+					<Card title="公告" content="更多功能正在开发中..."></Card>
 				</div>
 			</v-col>
 		</v-row>
