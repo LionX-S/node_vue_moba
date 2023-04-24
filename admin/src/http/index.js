@@ -32,7 +32,9 @@ http.interceptors.response.use(
 				message: err.response.data.message,
 				center:true
 			});
-			router.push("/login");
+			if(err.response.data.code === 401) {
+				router.push("/login");
+			}
 		}
 		return Promise.reject(err);
 	}
