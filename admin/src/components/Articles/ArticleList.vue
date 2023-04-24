@@ -17,6 +17,16 @@
 				align="center">
 			</el-table-column>
 			<el-table-column
+				prop="imageUrl"
+				label="文章封面"
+				align="center">
+				<template slot-scope="scope">
+					<el-image
+						style="width: 50px; height: 50px"
+						:src="scope.row.imageUrl"></el-image>
+				</template>
+			</el-table-column>
+			<el-table-column
 				prop="category"
 				label="所属分类"
 				align="center">
@@ -43,7 +53,7 @@
 					<el-button
 						type="danger"
 						size="mini"
-						@click="deleteArticle(scope.row.id, scope.row.comment)"
+						@click="deleteArticle(scope.row.id, scope.row.imageUrl, scope.row.comment)"
 						>删除</el-button
 					>
 				</template>
@@ -72,7 +82,7 @@
 				this.articlesList = body;
 			},
 
-			deleteArticle(articleId, articleComment) {
+			deleteArticle(articleId, imageUrl, articleComment) {
 				drawImgUrl(articleComment);
 				this.$confirm("此操作将永久删除该数据,是否继续?", "提示", {
 					confirmButtonText: "确定",
@@ -85,6 +95,8 @@
 					drawImgUrl(articleComment).forEach(async (item) => {
 						await deleteImage(item);
 					});
+					// 删除封面图片
+					deleteImage(imageUrl);
 					this.$message({
 						type: "success",
 						message,
