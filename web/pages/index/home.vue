@@ -14,16 +14,6 @@
 					:thumbUp="item.thumbUp"
 					:pageView="item.pageView"></Card>
 			</v-col>
-			<v-col
-				cols="4"
-				class="d-none d-sm-flex">
-				<div
-					id="cardContainer"
-					class="w-100"
-					:class="{ scrollAna: isScrollAna }">
-					<Card title="公告" content="更多功能正在开发中..."></Card>
-				</div>
-			</v-col>
 		</v-row>
 	</v-container>
 </template>

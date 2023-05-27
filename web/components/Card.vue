@@ -22,7 +22,7 @@
 			style="height: 55px"
 			v-html="content">
 		</v-card-text>
-		<v-card-actions v-if="thumbUp">
+		<v-card-actions>
 			<v-btn
 				color="orange-lighten-2"
 				variant="text">
